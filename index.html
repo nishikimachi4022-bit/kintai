@@ -1,82 +1,807 @@
+```html
 <!doctype html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1769d1">
+
 <title>勤怠打刻</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;background:#eef3f8;color:#17212b;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP","Yu Gothic",sans-serif}.app{max-width:520px;margin:auto;min-height:100vh;background:#fff}header{padding:14px 16px;border-bottom:1px solid #dde5ee;position:sticky;top:0;background:#fff;z-index:5}.head{display:flex;justify-content:space-between;align-items:center}h1{font-size:21px;margin:0}.clock{text-align:right;font-size:13px;color:#667085}main{padding:15px}.card{border:1px solid #dbe3ec;border-radius:16px;padding:15px;margin-bottom:13px}.label{font-size:12px;font-weight:700;color:#667085;margin-bottom:7px}select{width:100%;height:50px;border:1px solid #cbd5e1;border-radius:12px;font-size:17px;padding:0 12px;background:#fff}.buttons{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:12px}.punch{height:105px;border:0;border-radius:16px;color:#fff;font-size:21px;font-weight:800}.punch small{display:block;font-size:11px;margin-top:6px;font-weight:500}.in{background:#16834b}.out{background:#d9342b}.punch:disabled{background:#c9d1da}.status{margin-top:12px;font-size:13px;line-height:1.7;color:#475467}.ok{color:#147a42;font-weight:700}.err{color:#c62828;font-weight:700}.notice{background:#f5f8fb;border-radius:12px;padding:11px;font-size:12px;line-height:1.7;color:#475467}.setting{display:flex;gap:7px}.setting input{flex:1;min-width:0;height:44px;border:1px solid #cbd5e1;border-radius:10px;padding:0 9px}.setting button,.subbtn{height:44px;border:0;border-radius:10px;padding:0 14px;background:#1769d1;color:#fff;font-weight:700}.history{margin-top:12px;overflow:auto}table{border-collapse:collapse;width:100%;font-size:12px}th,td{padding:8px 5px;border-bottom:1px solid #e5e7eb;text-align:center;white-space:nowrap}th{background:#f7f9fb}.red{color:#d9342b;font-weight:700}.hidden{display:none}.success{background:#edf9f1;border:1px solid #bfe5cb;border-radius:12px;padding:10px;font-size:13px;color:#176b38;margin-top:10px}
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:#eef3f8;
+  color:#17212b;
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP","Yu Gothic",sans-serif
+}
+
+.app{
+  max-width:520px;
+  margin:auto;
+  min-height:100vh;
+  background:#fff
+}
+
+header{
+  padding:14px 16px;
+  border-bottom:1px solid #dde5ee;
+  position:sticky;
+  top:0;
+  background:#fff;
+  z-index:5
+}
+
+.head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center
+}
+
+h1{
+  font-size:21px;
+  margin:0
+}
+
+.clock{
+  text-align:right;
+  font-size:13px;
+  color:#667085
+}
+
+main{
+  padding:15px
+}
+
+.card{
+  border:1px solid #dbe3ec;
+  border-radius:16px;
+  padding:15px;
+  margin-bottom:13px
+}
+
+.label{
+  font-size:12px;
+  font-weight:700;
+  color:#667085;
+  margin-bottom:7px
+}
+
+select{
+  width:100%;
+  height:50px;
+  border:1px solid #cbd5e1;
+  border-radius:12px;
+  font-size:17px;
+  padding:0 12px;
+  background:#fff
+}
+
+.buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:11px;
+  margin-top:12px
+}
+
+.punch{
+  height:105px;
+  border:0;
+  border-radius:16px;
+  color:#fff;
+  font-size:21px;
+  font-weight:800
+}
+
+.punch small{
+  display:block;
+  font-size:11px;
+  margin-top:6px;
+  font-weight:500
+}
+
+.in{
+  background:#16834b
+}
+
+.out{
+  background:#d9342b
+}
+
+.punch:disabled{
+  background:#c9d1da
+}
+
+.status{
+  margin-top:12px;
+  font-size:13px;
+  line-height:1.7;
+  color:#475467
+}
+
+.ok{
+  color:#147a42;
+  font-weight:700
+}
+
+.err{
+  color:#c62828;
+  font-weight:700
+}
+
+.notice{
+  background:#f5f8fb;
+  border-radius:12px;
+  padding:11px;
+  font-size:12px;
+  line-height:1.7;
+  color:#475467
+}
+
+.setting{
+  display:flex;
+  gap:7px
+}
+
+.setting input{
+  flex:1;
+  min-width:0;
+  height:44px;
+  border:1px solid #cbd5e1;
+  border-radius:10px;
+  padding:0 9px
+}
+
+.setting button,
+.subbtn{
+  height:44px;
+  border:0;
+  border-radius:10px;
+  padding:0 14px;
+  background:#1769d1;
+  color:#fff;
+  font-weight:700
+}
+
+.history{
+  margin-top:12px;
+  overflow:auto
+}
+
+table{
+  border-collapse:collapse;
+  width:100%;
+  font-size:12px
+}
+
+th,td{
+  padding:8px 5px;
+  border-bottom:1px solid #e5e7eb;
+  text-align:center;
+  white-space:nowrap
+}
+
+th{
+  background:#f7f9fb
+}
+
+.red{
+  color:#d9342b;
+  font-weight:700
+}
+
+.hidden{
+  display:none
+}
+
+.success{
+  background:#edf9f1;
+  border:1px solid #bfe5cb;
+  border-radius:12px;
+  padding:10px;
+  font-size:13px;
+  color:#176b38;
+  margin-top:10px
+}
 </style>
 </head>
+
 <body>
+
 <div class="app">
-<header><div class="head"><h1>勤怠打刻</h1><div class="clock"><div id="time">--:--:--</div><div id="today">----</div></div></div></header>
+
+<header>
+  <div class="head">
+    <h1>勤怠打刻</h1>
+
+    <div class="clock">
+      <div id="time">--:--:--</div>
+      <div id="today">----</div>
+    </div>
+  </div>
+</header>
+
 <main>
+
 <section class="card">
-<div class="label">従業員を選択</div>
-<select id="employee"></select>
-<div id="status" class="status">今日の打刻状況を確認しています。</div>
+
+  <div class="label">従業員を選択</div>
+
+  <select id="employee"></select>
+
+  <div id="status" class="status">
+    今日の打刻状況を確認しています。
+  </div>
+
 </section>
+
+
 <section class="card">
-<div class="label">本日の打刻</div>
-<div class="buttons">
-<button id="inBtn" class="punch in" onclick="punch('in')">出勤<small>出勤時にタップ</small></button>
-<button id="outBtn" class="punch out" onclick="punch('out')">退勤<small>退勤時にタップ</small></button>
-</div>
-<div id="message"></div>
+
+  <div class="label">本日の打刻</div>
+
+  <div class="buttons">
+
+    <button
+      id="inBtn"
+      class="punch in"
+      onclick="punch('in')">
+      出勤
+      <small>出勤時にタップ</small>
+    </button>
+
+    <button
+      id="outBtn"
+      class="punch out"
+      onclick="punch('out')">
+      退勤
+      <small>退勤時にタップ</small>
+    </button>
+
+  </div>
+
+  <div id="message"></div>
+
 </section>
+
+
 <section class="card">
-<div class="notice">
-<strong>勤怠表への反映ルール</strong><br>
-・根本さん以外：出勤時間はシフトの時間を使用するため、出勤ボタンでは出勤欄を変更しません。<br>
-・根本さん：出勤ボタンを押した実際の時刻を出勤欄へ入力します。<br>
-・全員：退勤ボタンを押した実際の時刻を退勤欄へ入力します。<br>
-・「打刻管理を貼る」などのログ用シートは使用しません。
-</div>
+
+  <div class="notice">
+
+    <strong>勤怠表への反映ルール</strong><br>
+
+    ・根本さん以外：出勤時間はシフトの時間を使用するため、出勤ボタンでは出勤欄を変更しません。<br>
+
+    ・根本さん：出勤ボタンを押した実際の時刻を出勤欄へ入力します。<br>
+
+    ・全員：退勤ボタンを押した実際の時刻を退勤欄へ入力します。<br>
+
+    ・「打刻管理を貼る」などのログ用シートは使用しません。
+
+  </div>
+
 </section>
+
+
 <section class="card">
-<div class="label">Google Apps Script URL</div>
-<div class="setting"><input id="gasUrl" placeholder="https://script.google.com/macros/s/.../exec"><button onclick="saveUrl()">保存</button></div>
-<div id="urlMsg" class="status"></div>
+
+  <div class="label">
+    Google Apps Script URL
+  </div>
+
+  <div class="setting">
+
+    <input
+      id="gasUrl"
+      placeholder="https://script.google.com/macros/s/.../exec">
+
+    <button onclick="saveUrl()">
+      保存
+    </button>
+
+  </div>
+
+  <div id="urlMsg" class="status"></div>
+
 </section>
+
 </main>
+
 </div>
+
+
 <script>
-const EMP=[
-['錦町','神野'],['錦町','横川'],['錦町','渡邉'],['錦町','戸澤'],['錦町','松本'],['錦町','根本'],
-['入船','小野寺'],['入船','増見'],['入船','阿部'],['入船','渡邊'],
-['メルヘン','齊藤'],['メルヘン','大橋'],['メルヘン','福井'],['メルヘン','小谷']
+
+
+// ============================================================
+// 従業員一覧
+// ============================================================
+
+const EMP = [
+
+  ['錦町','神野'],
+  ['錦町','横川'],
+  ['錦町','渡邉'],
+  ['錦町','戸澤'],
+  ['錦町','松本'],
+  ['錦町','根本'],
+
+  ['入船','小野寺'],
+  ['入船','増見'],
+  ['入船','阿部'],
+  ['入船','渡邊'],
+
+  ['メルヘン','齊藤'],
+  ['メルヘン','大橋'],
+  ['メルヘン','福井'],
+  ['メルヘン','小谷']
+
 ];
-const KEY='勤怠GAS_URL';
-const $=id=>document.getElementById(id);
-function pad(n){return String(n).padStart(2,'0')}
-function now(){const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`}
-function displayNow(){const d=new Date();$('time').textContent=`${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;$('today').textContent=`${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())}`;setTimeout(displayNow,1000)}
-function selected(){const i=$('employee').selectedIndex;return EMP[i]}
+
+
+// ============================================================
+// localStorage
+// ============================================================
+
+const KEY = '勤怠GAS_URL';
+
+
+// ============================================================
+// 短縮
+// ============================================================
+
+const $ = id => document.getElementById(id);
+
+
+// ============================================================
+// 2桁表示
+// ============================================================
+
+function pad(n){
+
+  return String(n).padStart(2,'0');
+
+}
+
+
+// ============================================================
+// 現在時刻
+//
+// 例:
+// 2026-09-18T09:35:12
+// ============================================================
+
+function now(){
+
+  const d = new Date();
+
+  return (
+    `${d.getFullYear()}-` +
+    `${pad(d.getMonth()+1)}-` +
+    `${pad(d.getDate())}T` +
+    `${pad(d.getHours())}:` +
+    `${pad(d.getMinutes())}:` +
+    `${pad(d.getSeconds())}`
+  );
+
+}
+
+
+// ============================================================
+// 今日の日付
+//
+// GASへ送る形式
+// 2026-09-18
+// ============================================================
+
+function todayString(){
+
+  const d = new Date();
+
+  return (
+    `${d.getFullYear()}-` +
+    `${pad(d.getMonth()+1)}-` +
+    `${pad(d.getDate())}`
+  );
+
+}
+
+
+// ============================================================
+// 現在時刻の表示
+// ============================================================
+
+function displayNow(){
+
+  const d = new Date();
+
+  $('time').textContent =
+    `${pad(d.getHours())}:` +
+    `${pad(d.getMinutes())}:` +
+    `${pad(d.getSeconds())}`;
+
+  $('today').textContent =
+    `${d.getFullYear()}/` +
+    `${pad(d.getMonth()+1)}/` +
+    `${pad(d.getDate())}`;
+
+  setTimeout(displayNow,1000);
+
+}
+
+
+// ============================================================
+// 選択中の従業員
+// ============================================================
+
+function selected(){
+
+  const i = $('employee').selectedIndex;
+
+  return EMP[i];
+
+}
+
+
+// ============================================================
+// 初期化
+// ============================================================
+
 function init(){
- const s=$('employee');
- let last=localStorage.getItem('勤怠従業員')||'神野';
- ['錦町','入船','メルヘン'].forEach(store=>{const g=document.createElement('optgroup');g.label=store;EMP.filter(x=>x[0]===store).forEach(x=>{const o=document.createElement('option');o.value=x[1];o.textContent=x[1];g.appendChild(o)});s.appendChild(g)});
- s.value=last;s.onchange=()=>{localStorage.setItem('勤怠従業員',s.value);updateStatus()};
- $('gasUrl').value=localStorage.getItem(KEY)||'';displayNow();updateStatus();
+
+  const s = $('employee');
+
+  const last =
+    localStorage.getItem('勤怠従業員') || '神野';
+
+
+  // 店舗ごとにグループ化
+
+  ['錦町','入船','メルヘン'].forEach(store => {
+
+    const g = document.createElement('optgroup');
+
+    g.label = store;
+
+
+    EMP
+      .filter(x => x[0] === store)
+      .forEach(x => {
+
+        const o = document.createElement('option');
+
+        o.value = x[1];
+
+        o.textContent = x[1];
+
+        g.appendChild(o);
+
+      });
+
+
+    s.appendChild(g);
+
+  });
+
+
+  s.value = last;
+
+
+  s.onchange = () => {
+
+    localStorage.setItem(
+      '勤怠従業員',
+      s.value
+    );
+
+    updateStatus();
+
+  };
+
+
+  $('gasUrl').value =
+    localStorage.getItem(KEY) || '';
+
+
+  displayNow();
+
+  updateStatus();
+
 }
-function updateStatus(){const e=selected();$('status').textContent=`${e[0]}・${e[1]}さんを選択中。出勤・退勤ボタンを押してください。`;$('inBtn').disabled=false;$('outBtn').disabled=false}
-function saveUrl(){localStorage.setItem(KEY,$('gasUrl').value.trim());$('urlMsg').className='status ok';$('urlMsg').textContent='GAS URLを保存しました。'}
+
+
+// ============================================================
+// ステータス表示
+// ============================================================
+
+function updateStatus(){
+
+  const e = selected();
+
+  if(!e) return;
+
+  $('status').textContent =
+    `${e[0]}・${e[1]}さんを選択中。` +
+    `出勤・退勤ボタンを押してください。`;
+
+  $('inBtn').disabled = false;
+
+  $('outBtn').disabled = false;
+
+}
+
+
+// ============================================================
+// GAS URL保存
+// ============================================================
+
+function saveUrl(){
+
+  const url =
+    $('gasUrl').value.trim();
+
+  if(!url){
+
+    $('urlMsg').className =
+      'status err';
+
+    $('urlMsg').textContent =
+      'GAS URLを入力してください。';
+
+    return;
+
+  }
+
+
+  localStorage.setItem(
+    KEY,
+    url
+  );
+
+
+  $('urlMsg').className =
+    'status ok';
+
+  $('urlMsg').textContent =
+    'GAS URLを保存しました。';
+
+}
+
+
+// ============================================================
+// 打刻
+//
+// ここが今回の重要な修正部分です。
+//
+// GAS側へ:
+//
+// 退勤:
+// {
+//   date: "2026-09-18",
+//   store: "錦町",
+//   name: "神野",
+//   out: "09:35"
+// }
+//
+// 根本さんの出勤:
+// {
+//   date: "2026-09-18",
+//   store: "錦町",
+//   name: "根本",
+//   in: "09:35"
+// }
+//
+// を送ります。
+// ============================================================
+
 async function punch(action){
- const url=localStorage.getItem(KEY)||$('gasUrl').value.trim();if(!url){alert('先にGoogle Apps Script URLを設定してください。');return}
- const e=selected();const payload={action,store:e[0],name:e[1],clientTime:now()};
- $('inBtn').disabled=true;$('outBtn').disabled=true;$('message').innerHTML='送信中…';
- try{
-   await fetch(url,{method:'POST',mode:'no-cors',body:JSON.stringify(payload)});
-   $('message').innerHTML=`<div class="success">${action==='in'?'出勤':'退勤'}の打刻を送信しました。<br>勤怠表への反映を確認してください。</div>`;
-   $('status').textContent=`${e[0]}・${e[1]}さん：${action==='in'?'出勤':'退勤'}を送信済み`;
- }catch(err){
-   $('message').innerHTML='<div class="status err">送信できませんでした。GAS URLと公開設定を確認してください。</div>';
-   $('inBtn').disabled=false;$('outBtn').disabled=false;
- }
+
+  const url =
+    localStorage.getItem(KEY) ||
+    $('gasUrl').value.trim();
+
+
+  // GAS URLがない
+
+  if(!url){
+
+    alert(
+      '先にGoogle Apps Script URLを設定してください。'
+    );
+
+    return;
+
+  }
+
+
+  const e = selected();
+
+
+  if(!e){
+
+    alert(
+      '従業員を選択してください。'
+    );
+
+    return;
+
+  }
+
+
+  const store = e[0];
+
+  const name = e[1];
+
+  const d = new Date();
+
+
+  // ==========================================================
+  // GASへ送る値
+  // ==========================================================
+
+  const date =
+    `${d.getFullYear()}-` +
+    `${pad(d.getMonth()+1)}-` +
+    `${pad(d.getDate())}`;
+
+
+  const time =
+    `${pad(d.getHours())}:` +
+    `${pad(d.getMinutes())}`;
+
+
+  // ==========================================================
+  // URLSearchParams形式にします。
+  //
+  // Code.gs側の e.parameter で受け取れる形式です。
+  // ==========================================================
+
+  const params = new URLSearchParams();
+
+  params.append('date', date);
+
+  params.append('store', store);
+
+  params.append('name', name);
+
+
+  // ----------------------------------------------------------
+  // 出勤
+  // ----------------------------------------------------------
+
+  if(action === 'in'){
+
+    // 根本さんだけ実際の出勤時刻を送る
+
+    if(name === '根本'){
+
+      params.append('in', time);
+
+    }else{
+
+      // 根本さん以外は出勤欄を変更しない
+
+      params.append('in', '');
+
+    }
+
+    params.append('out', '');
+
+  }
+
+
+  // ----------------------------------------------------------
+  // 退勤
+  // ----------------------------------------------------------
+
+  if(action === 'out'){
+
+    params.append('in', '');
+
+    params.append('out', time);
+
+  }
+
+
+  // ==========================================================
+  // ボタンを一時停止
+  // ==========================================================
+
+  $('inBtn').disabled = true;
+
+  $('outBtn').disabled = true;
+
+  $('message').innerHTML =
+    '<div class="status">送信中…</div>';
+
+
+  try{
+
+    // ========================================================
+    // GASへPOST
+    //
+    // no-corsを使用するため、GASのレスポンス内容は
+    // ブラウザ側では読み取りません。
+    // ========================================================
+
+    await fetch(url,{
+
+      method:'POST',
+
+      mode:'no-cors',
+
+      headers:{
+        'Content-Type':
+          'application/x-www-form-urlencoded;charset=UTF-8'
+      },
+
+      body:params.toString()
+
+    });
+
+
+    // ========================================================
+    // 送信完了表示
+    // ========================================================
+
+    $('message').innerHTML =
+
+      `<div class="success">` +
+
+      `${action === 'in' ? '出勤' : '退勤'}の打刻を送信しました。<br>` +
+
+      `日時：${date} ${time}<br>` +
+
+      `店舗：${store}<br>` +
+
+      `氏名：${name}` +
+
+      `</div>`;
+
+
+    $('status').textContent =
+
+      `${store}・${name}さん：` +
+
+      `${action === 'in' ? '出勤' : '退勤'}を送信済み`;
+
+
+  }catch(err){
+
+    console.error(err);
+
+
+    $('message').innerHTML =
+
+      `<div class="status err">` +
+
+      `送信できませんでした。<br>` +
+
+      `GAS URLと公開設定を確認してください。` +
+
+      `</div>`;
+
+
+    $('inBtn').disabled = false;
+
+    $('outBtn').disabled = false;
+
+  }
+
 }
+
+
+// ============================================================
+// 起動
+// ============================================================
+
 init();
+
 </script>
+
 </body>
 </html>
+```
