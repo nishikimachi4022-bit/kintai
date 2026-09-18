@@ -165,37 +165,6 @@ select{
   font-weight:700
 }
 
-.history{
-  margin-top:12px;
-  overflow:auto
-}
-
-table{
-  border-collapse:collapse;
-  width:100%;
-  font-size:12px
-}
-
-th,td{
-  padding:8px 5px;
-  border-bottom:1px solid #e5e7eb;
-  text-align:center;
-  white-space:nowrap
-}
-
-th{
-  background:#f7f9fb
-}
-
-.red{
-  color:#d9342b;
-  font-weight:700
-}
-
-.hidden{
-  display:none
-}
-
 .success{
   background:#edf9f1;
   border:1px solid #bfe5cb;
@@ -214,20 +183,25 @@ th{
 
 <header>
   <div class="head">
+
     <h1>勤怠打刻</h1>
 
     <div class="clock">
       <div id="time">--:--:--</div>
       <div id="today">----</div>
     </div>
+
   </div>
 </header>
+
 
 <main>
 
 <section class="card">
 
-  <div class="label">従業員を選択</div>
+  <div class="label">
+    従業員を選択
+  </div>
 
   <select id="employee"></select>
 
@@ -240,7 +214,9 @@ th{
 
 <section class="card">
 
-  <div class="label">本日の打刻</div>
+  <div class="label">
+    本日の打刻
+  </div>
 
   <div class="buttons">
 
@@ -248,16 +224,27 @@ th{
       id="inBtn"
       class="punch in"
       onclick="punch('in')">
+
       出勤
-      <small>出勤時にタップ</small>
+
+      <small>
+        出勤時にタップ
+      </small>
+
     </button>
+
 
     <button
       id="outBtn"
       class="punch out"
       onclick="punch('out')">
+
       退勤
-      <small>退勤時にタップ</small>
+
+      <small>
+        退勤時にタップ
+      </small>
+
     </button>
 
   </div>
@@ -342,18 +329,11 @@ const EMP = [
 ];
 
 
-// ============================================================
-// localStorage
-// ============================================================
-
 const KEY = '勤怠GAS_URL';
 
 
-// ============================================================
-// 短縮
-// ============================================================
-
-const $ = id => document.getElementById(id);
+const $ = id =>
+  document.getElementById(id);
 
 
 // ============================================================
@@ -369,49 +349,6 @@ function pad(n){
 
 // ============================================================
 // 現在時刻
-//
-// 例:
-// 2026-09-18T09:35:12
-// ============================================================
-
-function now(){
-
-  const d = new Date();
-
-  return (
-    `${d.getFullYear()}-` +
-    `${pad(d.getMonth()+1)}-` +
-    `${pad(d.getDate())}T` +
-    `${pad(d.getHours())}:` +
-    `${pad(d.getMinutes())}:` +
-    `${pad(d.getSeconds())}`
-  );
-
-}
-
-
-// ============================================================
-// 今日の日付
-//
-// GASへ送る形式
-// 2026-09-18
-// ============================================================
-
-function todayString(){
-
-  const d = new Date();
-
-  return (
-    `${d.getFullYear()}-` +
-    `${pad(d.getMonth()+1)}-` +
-    `${pad(d.getDate())}`
-  );
-
-}
-
-
-// ============================================================
-// 現在時刻の表示
 // ============================================================
 
 function displayNow(){
@@ -439,7 +376,8 @@ function displayNow(){
 
 function selected(){
 
-  const i = $('employee').selectedIndex;
+  const i =
+    $('employee').selectedIndex;
 
   return EMP[i];
 
@@ -452,34 +390,37 @@ function selected(){
 
 function init(){
 
-  const s = $('employee');
+  const s =
+    $('employee');
 
   const last =
-    localStorage.getItem('勤怠従業員') || '神野';
+    localStorage.getItem('勤怠従業員') ||
+    '神野';
 
 
-  // 店舗ごとにグループ化
+  ['錦町','入船','メルヘン']
+  .forEach(store => {
 
-  ['錦町','入船','メルヘン'].forEach(store => {
-
-    const g = document.createElement('optgroup');
+    const g =
+      document.createElement('optgroup');
 
     g.label = store;
 
 
     EMP
-      .filter(x => x[0] === store)
-      .forEach(x => {
+    .filter(x => x[0] === store)
+    .forEach(x => {
 
-        const o = document.createElement('option');
+      const o =
+        document.createElement('option');
 
-        o.value = x[1];
+      o.value = x[1];
 
-        o.textContent = x[1];
+      o.textContent = x[1];
 
-        g.appendChild(o);
+      g.appendChild(o);
 
-      });
+    });
 
 
     s.appendChild(g);
@@ -514,7 +455,7 @@ function init(){
 
 
 // ============================================================
-// ステータス表示
+// ステータス
 // ============================================================
 
 function updateStatus(){
@@ -523,9 +464,13 @@ function updateStatus(){
 
   if(!e) return;
 
+
   $('status').textContent =
     `${e[0]}・${e[1]}さんを選択中。` +
     `出勤・退勤ボタンを押してください。`;
+
+
+  // 通常状態では両方押せる
 
   $('inBtn').disabled = false;
 
@@ -542,6 +487,7 @@ function saveUrl(){
 
   const url =
     $('gasUrl').value.trim();
+
 
   if(!url){
 
@@ -573,28 +519,6 @@ function saveUrl(){
 
 // ============================================================
 // 打刻
-//
-// ここが今回の重要な修正部分です。
-//
-// GAS側へ:
-//
-// 退勤:
-// {
-//   date: "2026-09-18",
-//   store: "錦町",
-//   name: "神野",
-//   out: "09:35"
-// }
-//
-// 根本さんの出勤:
-// {
-//   date: "2026-09-18",
-//   store: "錦町",
-//   name: "根本",
-//   in: "09:35"
-// }
-//
-// を送ります。
 // ============================================================
 
 async function punch(action){
@@ -603,8 +527,6 @@ async function punch(action){
     localStorage.getItem(KEY) ||
     $('gasUrl').value.trim();
 
-
-  // GAS URLがない
 
   if(!url){
 
@@ -639,7 +561,7 @@ async function punch(action){
 
 
   // ==========================================================
-  // GASへ送る値
+  // 今日の日付
   // ==========================================================
 
   const date =
@@ -648,125 +570,196 @@ async function punch(action){
     `${pad(d.getDate())}`;
 
 
+  // ==========================================================
+  // 現在時刻
+  // ==========================================================
+
   const time =
     `${pad(d.getHours())}:` +
     `${pad(d.getMinutes())}`;
 
 
   // ==========================================================
-  // URLSearchParams形式にします。
-  //
-  // Code.gs側の e.parameter で受け取れる形式です。
+  // GASへ送信するデータ
   // ==========================================================
 
-  const params = new URLSearchParams();
-
-  params.append('date', date);
-
-  params.append('store', store);
-
-  params.append('name', name);
+  const params =
+    new URLSearchParams();
 
 
-  // ----------------------------------------------------------
+  params.append(
+    'date',
+    date
+  );
+
+
+  params.append(
+    'store',
+    store
+  );
+
+
+  params.append(
+    'name',
+    name
+  );
+
+
+  // ==========================================================
   // 出勤
-  // ----------------------------------------------------------
+  // ==========================================================
 
   if(action === 'in'){
 
-    // 根本さんだけ実際の出勤時刻を送る
+    /*
+     * 根本さんだけ実際の出勤時刻を記録
+     */
 
     if(name === '根本'){
 
-      params.append('in', time);
+      params.append(
+        'in',
+        time
+      );
 
     }else{
 
-      // 根本さん以外は出勤欄を変更しない
+      /*
+       * 根本さん以外は出勤欄を変更しない
+       */
 
-      params.append('in', '');
+      params.append(
+        'in',
+        ''
+      );
 
     }
 
-    params.append('out', '');
 
-  }
-
-
-  // ----------------------------------------------------------
-  // 退勤
-  // ----------------------------------------------------------
-
-  if(action === 'out'){
-
-    params.append('in', '');
-
-    params.append('out', time);
+    params.append(
+      'out',
+      ''
+    );
 
   }
 
 
   // ==========================================================
-  // ボタンを一時停止
+  // 退勤
+  // ==========================================================
+
+  if(action === 'out'){
+
+    params.append(
+      'in',
+      ''
+    );
+
+
+    params.append(
+      'out',
+      time
+    );
+
+  }
+
+
+  // ==========================================================
+  // 送信中だけボタンを無効化
+  //
+  // 重要：
+  // 送信が終わったら必ず再び有効化します。
   // ==========================================================
 
   $('inBtn').disabled = true;
 
   $('outBtn').disabled = true;
 
+
   $('message').innerHTML =
-    '<div class="status">送信中…</div>';
+    `<div class="status">
+      ${action === 'in' ? '出勤' : '退勤'}を送信しています…
+    </div>`;
 
 
   try{
 
     // ========================================================
     // GASへPOST
+    // ========================================================
+
+    await fetch(
+      url,
+      {
+        method:'POST',
+
+        mode:'no-cors',
+
+        headers:{
+          'Content-Type':
+            'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+
+        body:
+          params.toString()
+      }
+    );
+
+
+    // ========================================================
+    // 送信完了
+    // ========================================================
+
+    if(action === 'in'){
+
+      $('message').innerHTML =
+
+        `<div class="success">
+          出勤を送信しました。<br>
+          日時：${date} ${time}<br>
+          店舗：${store}<br>
+          氏名：${name}<br>
+          <strong>このまま退勤ボタンを押せます。</strong>
+        </div>`;
+
+
+      $('status').textContent =
+        `${store}・${name}さん：` +
+        `出勤を送信済みです。` +
+        `退勤時に退勤ボタンを押してください。`;
+
+    }
+
+
+    else{
+
+      $('message').innerHTML =
+
+        `<div class="success">
+          退勤を送信しました。<br>
+          日時：${date} ${time}<br>
+          店舗：${store}<br>
+          氏名：${name}
+        </div>`;
+
+
+      $('status').textContent =
+        `${store}・${name}さん：退勤を送信済みです。`;
+
+    }
+
+
+    // ========================================================
+    // ★重要★
     //
-    // no-corsを使用するため、GASのレスポンス内容は
-    // ブラウザ側では読み取りません。
+    // 送信完了後はボタンを再び有効にする
+    //
+    // ページ更新は不要です。
     // ========================================================
 
-    await fetch(url,{
+    $('inBtn').disabled = false;
 
-      method:'POST',
-
-      mode:'no-cors',
-
-      headers:{
-        'Content-Type':
-          'application/x-www-form-urlencoded;charset=UTF-8'
-      },
-
-      body:params.toString()
-
-    });
-
-
-    // ========================================================
-    // 送信完了表示
-    // ========================================================
-
-    $('message').innerHTML =
-
-      `<div class="success">` +
-
-      `${action === 'in' ? '出勤' : '退勤'}の打刻を送信しました。<br>` +
-
-      `日時：${date} ${time}<br>` +
-
-      `店舗：${store}<br>` +
-
-      `氏名：${name}` +
-
-      `</div>`;
-
-
-    $('status').textContent =
-
-      `${store}・${name}さん：` +
-
-      `${action === 'in' ? '出勤' : '退勤'}を送信済み`;
+    $('outBtn').disabled = false;
 
 
   }catch(err){
@@ -776,14 +769,13 @@ async function punch(action){
 
     $('message').innerHTML =
 
-      `<div class="status err">` +
+      `<div class="status err">
+        送信できませんでした。<br>
+        GAS URLと公開設定を確認してください。
+      </div>`;
 
-      `送信できませんでした。<br>` +
 
-      `GAS URLと公開設定を確認してください。` +
-
-      `</div>`;
-
+    // エラーの場合も再度押せるようにする
 
     $('inBtn').disabled = false;
 
