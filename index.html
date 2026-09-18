@@ -201,8 +201,8 @@ select{
     <strong>勤怠表への反映ルール</strong><br>
     ・根本さん以外：出勤時間はシフトの時間を使用するため、出勤ボタンでは出勤欄を変更しません。<br>
     ・根本さん：出勤ボタンを押した実際の時刻を出勤欄へ入力します。<br>
-    ・全員：退勤ボタンを押した実際の時刻を退勤欄へ入力します。<br>
-    ・「打刻管理を貼る」などのログ用シートは使用しません。
+    ・全員：退勤ボタンを押した実際の時刻を「打刻管理を貼る」へ記録します。<br>
+    ・打刻記録は「打刻管理を貼る」シートへ保存します。
   </div>
 </section>
 <section class="card">
@@ -431,23 +431,28 @@ async function punch(action){
     `${pad(d.getHours())}:` +
     `${pad(d.getMinutes())}`;
 
-  // 送信データ（form-urlencoded）
-  const params = new URLSearchParams();
-  params.append('date', date);
-  params.append('store', store);
-  params.append('name', name);
+  // ============================================================
+  // 送信データ
+  // JSON文字列として送信する
+  // Content-Typeはあえて指定しない
+  // → application/jsonによるCORSプリフライトを避ける
+  // ============================================================
+  const payload = {
+    date: date,
+    store: store,
+    name: name,
+    in: '',
+    out: ''
+  };
 
   if(action === 'in'){
-    // 根本さんだけ実際の出勤時刻を送る。他は空（GAS側でも書かない）
+    // 根本さんだけ実際の出勤時刻を送る。
+    // その他スタッフは空欄のまま送信し、GAS側でも出勤欄は変更しない。
     if(name === '根本'){
-      params.append('in', time);
-    }else{
-      params.append('in', '');
+      payload.in = time;
     }
-    params.append('out', '');
   }else{
-    params.append('in', '');
-    params.append('out', time);
+    payload.out = time;
   }
 
   // 送信中だけ一時的に無効化（連打防止）。完了後は必ず有効に戻す
