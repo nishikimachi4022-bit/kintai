@@ -199,10 +199,10 @@ select{
 <section class="card">
   <div class="notice">
     <strong>勤怠表への反映ルール</strong><br>
-    ・根本さん以外：出勤時間はシフトの時間を使用するため、出勤ボタンでは出勤欄を変更しません。<br>
-    ・根本さん：出勤ボタンを押した実際の時刻を出勤欄へ入力します。<br>
-    ・全員：退勤ボタンを押した実際の時刻を「打刻管理を貼る」へ記録します。<br>
-    ・打刻記録は「打刻管理を貼る」シートへ保存します。
+    ・出勤・退勤ボタンを押した実際の時刻は、全員分「打刻管理を貼る」シートへ記録されます。<br>
+    ・錦町・入船・メルヘンの各店舗シートには、このアプリからは一切書き込みません。<br>
+    ・根本さん：店舗シートの出勤時間は「打刻管理を貼る」の出勤打刻を参照する数式で表示されます。<br>
+    ・根本さん以外：店舗シートの出勤時間はシフトの数式のままです（打刻の影響を受けません）。
   </div>
 </section>
 <section class="card">
@@ -399,10 +399,14 @@ function saveUrl(){
 // ============================================================
 // 打刻
 // 出勤・退勤は何回でも押せる。押すたびに最新時刻で上書きする
-// ★重要★ mode: 'no-cors' は使わない。
-// URLSearchParams を body にするとブラウザが適切な Content-Type
-// （application/x-www-form-urlencoded）を自動で付けてくれるため、
-// プリフライトなしでGAS側へ届き、レスポンスも読み取れる。
+//
+// ★送信形式について★
+// JSON文字列をそのまま body に渡し、Content-Type はあえて指定しない。
+// → その結果ブラウザは "text/plain;charset=UTF-8" を自動で付ける
+//    （これは CORS の「シンプルリクエスト」に該当するため、
+//    プリフライト(OPTIONS)が発生せず、GAS Web App にそのまま届く）
+// → GAS側の parsePostData_() は e.postData.contents を JSON.parse
+//    しているので、この形式で問題なく受け取れる。
 // ============================================================
 async function punch(action){
   const url =
@@ -431,12 +435,7 @@ async function punch(action){
     `${pad(d.getHours())}:` +
     `${pad(d.getMinutes())}`;
 
-  // ============================================================
-  // 送信データ
-  // JSON文字列として送信する
-  // Content-Typeはあえて指定しない
-  // → application/jsonによるCORSプリフライトを避ける
-  // ============================================================
+  // 送信データ（JSON）
   const payload = {
     date: date,
     store: store,
@@ -446,11 +445,10 @@ async function punch(action){
   };
 
   if(action === 'in'){
-    // 根本さんだけ実際の出勤時刻を送る。
-    // その他スタッフは空欄のまま送信し、GAS側でも出勤欄は変更しない。
-    if(name === '根本'){
-      payload.in = time;
-    }
+    // 「打刻管理を貼る」シートには全員分、実際に押した時刻を送る。
+    // 店舗シート（錦町/入船/メルヘン）の出勤欄はこのアプリからは
+    // 一切変更しないので、全員分ログに送っても安全。
+    payload.in = time;
   }else{
     payload.out = time;
   }
@@ -466,8 +464,8 @@ async function punch(action){
       method: 'POST',
       mode: 'cors',
       redirect: 'follow',
-      body: params
-      // Content-Type は指定しない（URLSearchParams が自動で付与）
+      body: JSON.stringify(payload)
+      // Content-Type は指定しない（プリフライト回避のため）
     });
 
     const text = await res.text();
