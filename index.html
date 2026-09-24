@@ -2,1851 +2,694 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>勤怠打刻</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#2C6E7F">
-
+<title>勤怠打刻</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
-
 <style>
+*{box-sizing:border-box}
 
-* {
-  box-sizing: border-box;
+:root{
+  --bg:#1f5c6d;
+  --bg2:#2f7c8d;
+  --card:#3e8798;
+  --card-border:#4f97a6;
+  --clock-bg:#10181b;
+  --clock-text:#f4fbfd;
+  --btn:#8fcbe0;
+  --btn-text:#123642;
+  --btn-selected:#f2a35c;
+  --btn-selected-text:#3a2000;
+  --btn-disabled:#5f97a4;
+  --btn-disabled-text:#9fc3cb;
+  --out:#e8747a;
+  --icon-mute:#7fa9ae;
+  --icon-lock:#3fae64;
+  --text-soft:#d9eef2;
+  --success-bg:#1f4f3d;
+  --success-text:#bdf0d3;
+  --success-border:#3f9c72;
+  --err-bg:#5a2430;
+  --err-text:#ffd3d8;
+  --err-border:#c65361;
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100%;
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:40px 16px;
+  background:radial-gradient(120% 140% at 20% -10%, var(--bg2), var(--bg) 60%);
+  color:var(--text-soft);
+  font-family:'M PLUS Rounded 1c','Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;
 }
 
-body {
-  font-family:
-    "M PLUS Rounded 1c",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-
-  background:
-    linear-gradient(
-      135deg,
-      #eef7f8 0%,
-      #dceff2 100%
-    );
-
-  color: #25444b;
-  min-height: 100vh;
+.app{
+  width:100%;
+  max-width:460px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:24px;
+  padding:22px;
+  box-shadow:0 20px 50px rgba(0,0,0,.25);
 }
 
-/* =========================
-   全体
-========================= */
-
-.app {
-  width: 100%;
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 20px 16px 40px;
+.head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:16px;
 }
 
-/* =========================
-   ヘッダー
-========================= */
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 18px;
+h1{
+  font-size:20px;
+  font-weight:800;
+  margin:0;
+  color:#fff;
+  letter-spacing:.02em;
 }
 
-.logo-area {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.icons{
+  display:flex;
+  gap:8px;
 }
 
-.logo-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 16px;
-
-  background: #2C6E7F;
-  color: white;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 24px;
-  box-shadow:
-    0 5px 14px rgba(44,110,127,.22);
+.iconbtn{
+  width:38px;
+  height:38px;
+  border:0;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  color:#fff;
 }
 
-.title-area h1 {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 800;
-  color: #245664;
+.iconbtn.mute{ background:var(--icon-mute); }
+.iconbtn.lock{ background:var(--icon-lock); }
+.iconbtn svg{ width:18px; height:18px; }
+
+.clock{
+  background:var(--clock-bg);
+  border-radius:16px;
+  padding:26px 16px;
+  text-align:center;
+  margin-bottom:18px;
 }
 
-.title-area p {
-  margin: 2px 0 0;
-  font-size: 12px;
-  color: #6a858b;
+.clock .date{
+  font-size:17px;
+  color:#9fb4b8;
+  margin-bottom:4px;
+  letter-spacing:.04em;
 }
 
-/* =========================
-   時計
-========================= */
-
-.clock-card {
-  background: rgba(255,255,255,.86);
-  border-radius: 24px;
-  padding: 18px 20px;
-  margin-bottom: 16px;
-
-  box-shadow:
-    0 8px 24px rgba(44,110,127,.12);
-
-  text-align: center;
+.clock .time{
+  font-size:64px;
+  font-weight:800;
+  color:var(--clock-text);
+  letter-spacing:.02em;
+  font-variant-numeric:tabular-nums;
 }
 
-.clock-date {
-  font-size: 14px;
-  color: #6b858b;
-  margin-bottom: 2px;
+.steplabel{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:15px;
+  font-weight:700;
+  color:#eafbff;
+  margin-bottom:12px;
 }
 
-.clock-time {
-  font-size: 42px;
-  line-height: 1.1;
-  font-weight: 800;
-  letter-spacing: 2px;
-  color: #245d6d;
+.backbtn{
+  border:0;
+  background:none;
+  color:#eafbff;
+  font-size:15px;
+  font-weight:700;
+  padding:4px 2px;
+  cursor:pointer;
+  text-decoration:underline;
+  text-underline-offset:2px;
 }
 
-/* =========================
-   カード
-========================= */
-
-.card {
-  background: rgba(255,255,255,.92);
-  border-radius: 24px;
-  padding: 20px;
-
-  margin-bottom: 16px;
-
-  box-shadow:
-    0 8px 24px rgba(44,110,127,.10);
+.resetbtn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:38px;
+  padding:0 14px;
+  border-radius:10px;
+  background:var(--btn);
+  color:#fff;
+  text-decoration:none;
+  text-shadow:0 1px 3px rgba(0,0,0,.25);
 }
 
-.section-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  font-size: 15px;
-  font-weight: 800;
-  color: #245664;
-
-  margin-bottom: 13px;
+.storegrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
 }
 
-.section-number {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: #2C6E7F;
-  color: white;
-
-  font-size: 13px;
-  font-weight: 800;
+.storebtn{
+  height:90px;
+  border:0;
+  border-radius:14px;
+  background:var(--btn);
+  color:#fff;
+  font-size:26px;
+  font-weight:800;
+  cursor:pointer;
+  text-shadow:0 1px 3px rgba(0,0,0,.25);
 }
 
-/* =========================
-   店舗ボタン
-========================= */
-
-.store-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+.storebtn.selected{
+  outline:4px solid var(--btn-selected);
+  outline-offset:-4px;
 }
 
-.store-btn {
-  border: none;
-  border-radius: 16px;
-
-  padding: 15px 8px;
-
-  background: #eef5f6;
-  color: #40646c;
-
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition:
-    transform .15s,
-    background .15s,
-    box-shadow .15s;
+.empgrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
 }
 
-.store-btn:hover {
-  transform: translateY(-1px);
+.empbtn{
+  height:76px;
+  border:0;
+  border-radius:14px;
+  background:var(--btn);
+  color:#fff;
+  font-size:24px;
+  font-weight:800;
+  cursor:pointer;
+  text-shadow:0 1px 3px rgba(0,0,0,.25);
 }
 
-.store-btn:active {
-  transform: scale(.97);
+.empbtn.selected{
+  outline:4px solid var(--btn-selected);
+  outline-offset:-4px;
 }
 
-.store-btn.selected {
-  background: #2C6E7F;
-  color: white;
-
-  box-shadow:
-    0 5px 14px rgba(44,110,127,.25);
-}
-
-/* =========================
-   職員ボタン
-========================= */
-
-.employee-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.employee-btn {
-  border: none;
-  border-radius: 15px;
-
-  min-height: 54px;
-  padding: 10px 6px;
-
-  background: #f0f6f7;
-  color: #42656d;
-
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition:
-    transform .15s,
-    background .15s,
-    box-shadow .15s;
-}
-
-.employee-btn:hover {
-  transform: translateY(-1px);
-}
-
-.employee-btn:active {
-  transform: scale(.97);
-}
-
-.employee-btn.selected {
-  background: #d8edf1;
-  color: #245d6d;
-
-  box-shadow:
-    inset 0 0 0 2px #2C6E7F;
-}
-
-/* =========================
-   選択状態
-========================= */
-
-.selected-info {
-  text-align: center;
-
-  background: #eef7f8;
-  border-radius: 16px;
-
-  padding: 12px 10px;
-  margin-bottom: 16px;
-
-  color: #55747b;
-  font-size: 13px;
-}
-
-.selected-info strong {
-  display: block;
-
-  margin-top: 3px;
-
-  font-size: 20px;
-  color: #245d6d;
-}
-
-/* =========================
-   打刻ボタン
-========================= */
-
-.punch-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.punch-btn {
-  border: none;
-  border-radius: 22px;
-
-  min-height: 110px;
-
-  font-family: inherit;
-  font-weight: 800;
-
-  cursor: pointer;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 5px;
-
-  transition:
-    transform .15s,
-    box-shadow .15s,
-    opacity .15s;
-}
-
-.punch-btn:hover {
-  transform: translateY(-2px);
-}
-
-.punch-btn:active {
-  transform: scale(.97);
-}
-
-.punch-btn .icon {
-  font-size: 34px;
-  line-height: 1;
-}
-
-.punch-btn .main {
-  font-size: 18px;
-}
-
-.punch-btn .sub {
-  font-size: 11px;
-  font-weight: 500;
-  opacity: .75;
-}
-
-/* 出勤 */
-
-.punch-in {
-  background: #dff1e9;
-  color: #277354;
-
-  box-shadow:
-    0 7px 18px rgba(39,115,84,.13);
-}
-
-/* 退勤 */
-
-.punch-out {
-  background: #e5edf5;
-  color: #345f7b;
-
-  box-shadow:
-    0 7px 18px rgba(52,95,123,.13);
-}
-
-/* 無効 */
-
-.punch-btn.disabled {
-  opacity: .42;
-  cursor: not-allowed;
-  transform: none !important;
-}
-
-/* =========================
-   ステータス
-========================= */
-
-.status {
-  margin-top: 14px;
-
-  padding: 12px 14px;
-
-  border-radius: 15px;
-
-  text-align: center;
-
-  background: #f3f8f9;
-
-  color: #617b81;
-
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.status.success {
-  background: #e6f5ed;
-  color: #2d7455;
-}
-
-.status.error {
-  background: #fbeaea;
-  color: #a34c4c;
-}
-
-/* =========================
-   説明
-========================= */
-
-.notice {
-  padding: 13px 15px;
-
-  border-radius: 15px;
-
-  background: rgba(255,255,255,.65);
-
-  color: #6c858b;
-
-  font-size: 11px;
-
-  line-height: 1.7;
-}
-
-/* =========================
-   ローディング
-========================= */
-
-.loading {
-  position: fixed;
-
-  inset: 0;
-
-  background: rgba(30,70,78,.25);
-
-  display: none;
-
-  align-items: center;
-  justify-content: center;
-
-  z-index: 1000;
-
-  backdrop-filter: blur(2px);
-}
-
-.loading.show {
-  display: flex;
-}
-
-.loading-box {
-  background: white;
-
-  border-radius: 20px;
-
-  padding: 25px 30px;
-
-  text-align: center;
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,.18);
-
-  color: #45656d;
-
-  font-size: 14px;
-}
-
-.spinner {
-  width: 34px;
-  height: 34px;
-
-  margin: 0 auto 12px;
-
-  border-radius: 50%;
-
-  border: 4px solid #dcecef;
-  border-top-color: #2C6E7F;
-
-  animation: spin .8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* =========================
-   完了表示
-========================= */
-
-.complete {
-  text-align: center;
-
-  padding: 18px;
-
-  border-radius: 18px;
-
-  margin-top: 14px;
-
-  display: none;
-}
-
-.complete.show {
-  display: block;
-}
-
-.complete-icon {
-  font-size: 38px;
-  margin-bottom: 5px;
-}
-
-.complete-title {
-  font-size: 18px;
-  font-weight: 800;
-
-  color: #2d6c54;
-}
-
-.complete-time {
-  margin-top: 3px;
-
-  font-size: 13px;
-
-  color: #658079;
-}
-
-/* =========================
-   スマホ
-========================= */
-
-@media (max-width: 520px) {
-
-  .app {
-    padding:
-      14px
-      12px
-      28px;
+.selected-banner{
+    background:#3fae64;
+    border-radius:14px;
+    padding:16px;
+    text-align:center;
+    margin-bottom:14px;
   }
 
-  .title-area h1 {
-    font-size: 19px;
+.selected-banner .who{
+    font-size:30px;
+    font-weight:800;
+    color:#fff !important;
   }
 
-  .clock-card {
-    padding: 16px;
-  }
-
-  .clock-time {
-    font-size: 36px;
-  }
-
-  .card {
-    padding: 16px;
-    border-radius: 20px;
-  }
-
-  .store-grid {
-    gap: 8px;
-  }
-
-  .store-btn {
-    padding: 13px 5px;
-    font-size: 14px;
-  }
-
-  .employee-grid {
-    gap: 8px;
-  }
-
-  .employee-btn {
-    min-height: 50px;
-    font-size: 13px;
-  }
-
-  .punch-grid {
-    gap: 10px;
-  }
-
-  .punch-btn {
-    min-height: 100px;
-    border-radius: 19px;
-  }
-
-  .punch-btn .icon {
-    font-size: 30px;
-  }
-
-  .punch-btn .main {
-    font-size: 17px;
-  }
-
+.buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:11px;
+  margin-top:4px;
 }
 
-/* =========================
-   極小画面
-========================= */
-
-@media (max-width: 360px) {
-
-  .employee-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .clock-time {
-    font-size: 32px;
-  }
-
+.punch{
+  height:120px;
+  border:0;
+  border-radius:16px;
+  color:var(--btn-text);
+  font-size:36px;
+  font-weight:800;
+  background:var(--btn);
+  cursor:pointer;
 }
 
+.punch.out{
+  background:var(--out);
+  color:#3a0e10;
+}
+
+.punch:disabled{
+  background:var(--btn-disabled);
+  color:var(--btn-disabled-text);
+  cursor:not-allowed;
+}
+
+.status{
+  font-size:13px;
+  line-height:1.7;
+  color:var(--text-soft);
+  margin-bottom:10px;
+  text-align:center;
+}
+
+.success{
+  background:var(--success-bg);
+  border:1px solid var(--success-border);
+  border-radius:12px;
+  padding:12px;
+  font-size:13px;
+  color:var(--success-text);
+  margin-top:12px;
+  line-height:1.7;
+}
+
+.err{
+  background:var(--err-bg);
+  border:1px solid var(--err-border);
+  border-radius:12px;
+  padding:12px;
+  font-size:13px;
+  color:var(--err-text);
+  margin-top:12px;
+  line-height:1.7;
+}
+
+.sending{
+  text-align:center;
+  font-size:13px;
+  color:var(--text-soft);
+  margin-top:12px;
+}
+
+.hidden{ display:none !important; }
+
+.settings{
+  margin-top:18px;
+  padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.15);
+}
+
+.settings .label{
+  font-size:12px;
+  font-weight:700;
+  color:#eafbff;
+  margin-bottom:7px;
+}
+
+.settings .row{
+  display:flex;
+  gap:7px;
+  margin-bottom:8px;
+}
+
+.settings input{
+  flex:1;
+  min-width:0;
+  height:42px;
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:10px;
+  padding:0 10px;
+  background:rgba(255,255,255,.92);
+  font-size:13px;
+}
+
+.settings button{
+  height:42px;
+  border:0;
+  border-radius:10px;
+  padding:0 14px;
+  background:var(--icon-lock);
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.settings .note{
+  font-size:11px;
+  line-height:1.7;
+  color:#cfe9ee;
+}
+
+.settings .urlmsg{
+  font-size:12px;
+  margin-top:4px;
+}
+.settings .urlmsg.ok{ color:#bdf0d3; }
+.settings .urlmsg.err{ color:#ffd3d8; }
 </style>
 </head>
-
 <body>
-
 <div class="app">
 
-  <!-- =====================
-       ヘッダー
-  ====================== -->
-
-  <header class="header">
-
-    <div class="logo-area">
-
-      <div class="logo-icon">
-        🕐
-      </div>
-
-      <div class="title-area">
-
-        <h1>勤怠打刻</h1>
-
-        <p>
-          出勤・退勤を記録します
-        </p>
-
-      </div>
-
+  <div class="head">
+    <h1 id="headerTitle">勤怠打刻</h1>
+    <div class="icons">
+      
     </div>
-
-  </header>
-
-
-  <!-- =====================
-       時計
-  ====================== -->
-
-  <section class="clock-card">
-
-    <div
-      id="clockDate"
-      class="clock-date">
-    </div>
-
-    <div
-      id="clockTime"
-      class="clock-time">
-    </div>
-
-  </section>
-
-
-  <!-- =====================
-       店舗選択
-  ====================== -->
-
-  <section class="card">
-
-    <div class="section-title">
-
-      <div class="section-number">
-        1
-      </div>
-
-      店舗を選択
-
-    </div>
-
-
-    <div
-      id="storeGrid"
-      class="store-grid">
-    </div>
-
-  </section>
-
-
-  <!-- =====================
-       職員選択
-  ====================== -->
-
-  <section class="card">
-
-    <div class="section-title">
-
-      <div class="section-number">
-        2
-      </div>
-
-      職員を選択
-
-    </div>
-
-
-    <div
-      id="employeeGrid"
-      class="employee-grid">
-    </div>
-
-  </section>
-
-
-  <!-- =====================
-       選択状態
-  ====================== -->
-
-  <section
-    id="selectedInfo"
-    class="selected-info">
-
-    店舗と職員を選択してください
-
-    <strong id="selectedName">
-      ―
-    </strong>
-
-  </section>
-
-
-  <!-- =====================
-       打刻
-  ====================== -->
-
-  <section class="card">
-
-    <div class="section-title">
-
-      <div class="section-number">
-        3
-      </div>
-
-      打刻
-
-    </div>
-
-
-    <div class="punch-grid">
-
-      <button
-        id="punchIn"
-        class="punch-btn punch-in disabled"
-        onclick="punch('in')">
-
-        <div class="icon">
-          ☀️
-        </div>
-
-        <div class="main">
-          出勤
-        </div>
-
-        <div class="sub">
-          出勤時にタップ
-        </div>
-
-      </button>
-
-
-      <button
-        id="punchOut"
-        class="punch-btn punch-out disabled"
-        onclick="punch('out')">
-
-        <div class="icon">
-          🌙
-        </div>
-
-        <div class="main">
-          退勤
-        </div>
-
-        <div class="sub">
-          退勤時にタップ
-        </div>
-
-      </button>
-
-    </div>
-
-
-    <div
-      id="status"
-      class="status">
-
-      店舗と職員を選択すると打刻できます。
-
-    </div>
-
-
-    <div
-      id="complete"
-      class="complete">
-
-      <div class="complete-icon">
-        ✓
-      </div>
-
-      <div
-        id="completeTitle"
-        class="complete-title">
-        打刻しました
-      </div>
-
-      <div
-        id="completeTime"
-        class="complete-time">
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- =====================
-       注意事項
-  ====================== -->
-
-  <div class="notice">
-
-    ・打刻時刻はその時点の時刻で記録されます。<br>
-    ・同じ日の出勤・退勤を再度打刻した場合、最新の時刻で更新されます。<br>
-    ・打刻データは勤怠管理用スプレッドシートに記録されます。
-
   </div>
 
-</div>
-
-
-<!-- =====================
-     ローディング
-====================== -->
-
-<div
-  id="loading"
-  class="loading">
-
-  <div class="loading-box">
-
-    <div class="spinner"></div>
-
-    <div>
-      打刻を送信しています…
-    </div>
-
+  <div class="clock">
+    <div class="date" id="clockDate">----/--/--</div>
+    <div class="time" id="clockTime">--:--</div>
   </div>
 
-</div>
+  <!-- STEP 1：店舗選択 -->
+  <section id="storeStep" class="step">
+    <div class="steplabel">店舗を選択してください</div>
+    <div class="storegrid" id="storeGrid"></div>
+  </section>
 
+  <!-- STEP 2：従業員選択 -->
+  <section id="empStep" class="step hidden">
+    <div class="steplabel">
+      <button class="backbtn resetbtn" id="backToStore">店舗を選びなおす</button>
+    </div>
+    <div class="steplabel">名前を選択してください</div>
+    <div class="empgrid" id="empGrid"></div>
+  </section>
+
+  <!-- STEP 3：出勤・退勤 -->
+  <section id="punchStep" class="step hidden">
+    <div class="steplabel">
+      <button class="backbtn resetbtn" id="backToEmp">名前を選びなおす</button>
+    </div>
+    <div class="selected-banner">
+      <div class="who" id="selectedLabel"></div>
+    </div>
+    <div class="status" id="status"></div>
+    <div class="buttons">
+      <button id="inBtn" class="punch in" onclick="punch('in')">出勤</button>
+      <button id="outBtn" class="punch out" onclick="punch('out')">退勤</button>
+    </div>
+    <div id="message"></div>
+  </section>
+
+</div>
 
 <script>
-
-/* =========================================================
-   ★★★ Google Apps Script URL ★★★
-
-   ここにGASのウェブアプリURLを設定してください。
-
-   例：
-   const GAS_URL =
-     'https://script.google.com/macros/s/XXXXXXXXXXXX/exec';
-
-   ※このURLはHTML画面から変更できません。
-   ※GASを再デプロイしてURLが変わった場合だけ、
-     ここを書き換えてください。
-========================================================= */
-
-const GAS_URL =https://script.google.com/macros/s/AKfycbyZ-lB5gCIYEh2bWPfDeFgyyhV_jGPqX7-FwjKAZvw-XLJupW9E0t86l8HYNPoigo1T/exec
-  'ここにGASのウェブアプリURLを貼り付け';
-
-
-/* =========================================================
-   店舗
-========================================================= */
-
-const STORES = [
-  '錦町',
-  '入船',
-  'メルヘン'
+// ============================================================
+// 店舗・従業員一覧
+// ============================================================
+const STORES = ['錦町','入船','メルヘン'];
+const STORE_COLORS = {
+  '錦町': '#70ad47',
+  '入船': '#5b9bd5',
+  'メルヘン': '#c27ba0'
+};
+const EMP = [
+  ['錦町','神野'],
+  ['錦町','横川'],
+  ['錦町','渡邉'],
+  ['錦町','戸澤'],
+  ['錦町','松本'],
+  ['錦町','根本'],
+  ['入船','小野寺'],
+  ['入船','増見'],
+  ['入船','阿部'],
+  ['入船','渡邊'],
+  ['メルヘン','齊藤'],
+  ['メルヘン','大橋'],
+  ['メルヘン','福井'],
+  ['メルヘン','小谷']
 ];
 
+// ============================================================
+// Google Apps Script URL
+// ここにGASウェブアプリの /exec URL を設定してください。
+// 職員側の画面から変更・保存することはできません。
+// ============================================================
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyZ-lB5gCIYEh2bWPfDeFgyyhV_jGPqX7-FwjKAZvw-XLJupW9E0t86l8HYNPoigo1T/exec';
 
-/* =========================================================
-   店舗カラー
-========================================================= */
+const PUNCH_KEY = '勤怠打刻状態';
+const LAST_KEY = '勤怠_最終選択';
+const $ = id => document.getElementById(id);
 
-const STORE_COLORS = {
+let currentStore = null;
+let currentName = null;
 
-  '錦町': '#2C6E7F',
-
-  '入船': '#4B7890',
-
-  'メルヘン': '#7A6A91'
-
-};
-
-
-/* =========================================================
-   職員
-========================================================= */
-
-const EMP = {
-
-  '錦町': [
-    '神野',
-    '横川',
-    '渡邉',
-    '戸澤',
-    '松本',
-    '根本'
-  ],
-
-  '入船': [
-    '小野寺',
-    '増見',
-    '阿部',
-    '渡邊'
-  ],
-
-  'メルヘン': [
-    '齊藤',
-    '大橋',
-    '福井',
-    '小谷'
-  ]
-
-};
-
-
-/* =========================================================
-   localStorage
-========================================================= */
-
-const PUNCH_KEY =
-  '勤怠_打刻状態';
-
-const LAST_KEY =
-  '勤怠_最後の選択';
-
-
-/* =========================================================
-   現在の選択
-========================================================= */
-
-let currentStore = '';
-
-let currentName = '';
-
-
-/* =========================================================
-   DOM取得
-========================================================= */
-
-function $(id) {
-
-  return document.getElementById(id);
-
+// ============================================================
+// ユーティリティ
+// ============================================================
+function pad(n){
+  return String(n).padStart(2,'0');
 }
 
-
-/* =========================================================
-   今日の日付
-========================================================= */
-
-function getDateString() {
-
-  const now = new Date();
-
-  const y =
-    now.getFullYear();
-
-  const m =
-    String(now.getMonth() + 1)
-      .padStart(2, '0');
-
-  const d =
-    String(now.getDate())
-      .padStart(2, '0');
-
-  return `${y}-${m}-${d}`;
-
+function todayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 }
 
-
-/* =========================================================
-   時刻
-========================================================= */
-
-function getTimeString() {
-
-  const now = new Date();
-
-  const h =
-    String(now.getHours())
-      .padStart(2, '0');
-
-  const m =
-    String(now.getMinutes())
-      .padStart(2, '0');
-
-  const s =
-    String(now.getSeconds())
-      .padStart(2, '0');
-
-  return `${h}:${m}:${s}`;
-
-}
-
-
-/* =========================================================
-   時計表示
-========================================================= */
-
-function updateClock() {
-
-  const now = new Date();
-
-
-  const year =
-    now.getFullYear();
-
-  const month =
-    now.getMonth() + 1;
-
-  const day =
-    now.getDate();
-
-
-  const weekdays = [
-    '日',
-    '月',
-    '火',
-    '水',
-    '木',
-    '金',
-    '土'
-  ];
-
-
-  const weekday =
-    weekdays[now.getDay()];
-
-
+function displayNow(){
+  const d = new Date();
   $('clockDate').textContent =
-    `${year}年${month}月${day}日（${weekday}）`;
-
-
+    `${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())}`;
   $('clockTime').textContent =
-    `${String(now.getHours()).padStart(2,'0')}:` +
-    `${String(now.getMinutes()).padStart(2,'0')}:` +
-    `${String(now.getSeconds()).padStart(2,'0')}`;
-
+    `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  setTimeout(displayNow, 1000);
 }
 
+// ============================================================
+// 打刻状態の読み書き（localStorage）
+// ============================================================
+function punchStateKey(store, name, date){
+  return `${date}_${store}_${name}`;
+}
 
-/* =========================================================
-   店舗ボタン生成
-========================================================= */
+function getPunchState(store, name, date){
+  try{
+    const all = JSON.parse(localStorage.getItem(PUNCH_KEY) || '{}');
+    return all[punchStateKey(store, name, date)] || { in: false, out: false };
+  }catch(_){
+    return { in: false, out: false };
+  }
+}
 
-function renderStores() {
+function setPunchState(store, name, date, partial){
+  try{
+    const all = JSON.parse(localStorage.getItem(PUNCH_KEY) || '{}');
+    const key = punchStateKey(store, name, date);
+    all[key] = Object.assign({}, all[key] || {}, partial);
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 30);
+    Object.keys(all).forEach(k => {
+      const d = k.split('_')[0];
+      if(d && new Date(d) < cutoff) delete all[k];
+    });
+    localStorage.setItem(PUNCH_KEY, JSON.stringify(all));
+  }catch(_){}
+}
 
-  const grid =
-    $('storeGrid');
+// ============================================================
+// 画面切り替え（店舗選択／従業員選択／出退勤）
+// ============================================================
+function showStep(step){
+  $('storeStep').classList.add('hidden');
+  $('empStep').classList.add('hidden');
+  $('punchStep').classList.add('hidden');
+  $(step).classList.remove('hidden');
+}
 
+function renderStoreGrid(){
+  const grid = $('storeGrid');
   grid.innerHTML = '';
-
-
   STORES.forEach(store => {
-
-    const button =
-      document.createElement('button');
-
-    button.className =
-      'store-btn';
-
-
-    button.textContent =
-      store;
-
-
-    if (store === currentStore) {
-
-      button.classList.add(
-        'selected'
-      );
-
-    }
-
-
-    button.onclick =
-      () => selectStore(store);
-
-
-    grid.appendChild(button);
-
+    const b = document.createElement('button');
+    b.className = 'storebtn';
+    b.textContent = store;
+    b.style.background = STORE_COLORS[store] || 'var(--btn)';
+    if(store === currentStore) b.classList.add('selected');
+    b.onclick = () => selectStore(store);
+    grid.appendChild(b);
   });
-
 }
 
-
-/* =========================================================
-   店舗選択
-========================================================= */
-
-function selectStore(store) {
-
-  currentStore =
-    store;
-
-  currentName =
-    '';
-
-
-  localStorage.setItem(
-    LAST_KEY,
-    JSON.stringify({
-      store: currentStore,
-      name: ''
-    })
-  );
-
-
-  renderStores();
-
-  renderEmployees();
-
-  updateSelected();
-
-  updateStatus();
-
-}
-
-
-/* =========================================================
-   職員ボタン生成
-========================================================= */
-
-function renderEmployees() {
-
-  const grid =
-    $('employeeGrid');
-
+function renderEmpGrid(){
+  const grid = $('empGrid');
   grid.innerHTML = '';
-
-
-  if (!currentStore) {
-
-    return;
-
-  }
-
-
-  const employees =
-    EMP[currentStore] || [];
-
-
-  employees.forEach(name => {
-
-    const button =
-      document.createElement('button');
-
-    button.className =
-      'employee-btn';
-
-
-    button.textContent =
-      name;
-
-
-    if (name === currentName) {
-
-      button.classList.add(
-        'selected'
-      );
-
-    }
-
-
-    button.onclick =
-      () => selectEmployee(name);
-
-
-    grid.appendChild(button);
-
+  EMP.filter(x => x[0] === currentStore).forEach(x => {
+    const b = document.createElement('button');
+    b.className = 'empbtn';
+    b.textContent = x[1];
+    b.style.background = STORE_COLORS[currentStore] || 'var(--btn)';
+    if(x[1] === currentName) b.classList.add('selected');
+    b.onclick = () => selectEmployee(x[1]);
+    grid.appendChild(b);
   });
-
 }
 
+function selectStore(store){
+  currentStore = store;
+  currentName = null;
+  $('headerTitle').textContent = store + '調剤薬局';
+  renderEmpGrid();
+  showStep('empStep');
+}
 
-/* =========================================================
-   職員選択
-========================================================= */
-
-function selectEmployee(name) {
-
-  currentName =
-    name;
-
-
-  localStorage.setItem(
-    LAST_KEY,
-    JSON.stringify({
-      store: currentStore,
-      name: currentName
-    })
-  );
-
-
-  renderEmployees();
-
-  updateSelected();
-
+function selectEmployee(name){
+  currentName = name;
+  localStorage.setItem(LAST_KEY, JSON.stringify({ store: currentStore, name: currentName }));
+  $('selectedLabel').textContent = `【${currentStore}】${currentName} さん`;
+  $('selectedLabel').style.background = STORE_COLORS[currentStore] || 'var(--btn)';
+  $('selectedLabel').style.color = '#fff';
+  showStep('punchStep');
   updateStatus();
-
 }
 
+$('backToStore').onclick = () => {
+  currentName = null;
+  renderStoreGrid();
+  showStep('storeStep');
+};
 
-/* =========================================================
-   選択状態表示
-========================================================= */
+$('backToEmp').onclick = () => {
+  renderEmpGrid();
+  showStep('empStep');
+};
 
-function updateSelected() {
+// ============================================================
+// ステータス表示・ボタン状態の更新
+// ============================================================
+function updateStatus(){
+  if(!currentStore || !currentName) return;
 
-  const info =
-    $('selectedInfo');
+  const date = todayStr();
+  const st = getPunchState(currentStore, currentName, date);
 
-  const name =
-    $('selectedName');
+  let msg = '出勤・退勤は何度でも押せます（最新時刻で上書きされます）。';
 
-
-  if (
-    currentStore &&
-    currentName
-  ) {
-
-    name.textContent =
-      `【${currentStore}】${currentName}`;
-
-  } else {
-
-    name.textContent =
-      '―';
-
+  if(st.in || st.out){
+    const parts = [];
+    if(st.in && st.inTime) parts.push(`直近の出勤：${st.inTime}`);
+    if(st.out && st.outTime) parts.push(`直近の退勤：${st.outTime}`);
+    if(parts.length) msg += ` ${parts.join(' / ')}`;
   }
 
+  $('status').textContent = msg;
+  $('inBtn').disabled = false;
+  $('outBtn').disabled = false;
 }
 
+// ============================================================
+// 打刻
+// ============================================================
+async function punch(action){
+  const url = GAS_URL;
 
-/* =========================================================
-   打刻ボタン状態
-========================================================= */
-
-function updatePunchButtons() {
-
-  const enabled =
-    !!(
-      currentStore &&
-      currentName
-    );
-
-
-  const inBtn =
-    $('punchIn');
-
-  const outBtn =
-    $('punchOut');
-
-
-  if (enabled) {
-
-    inBtn.classList.remove(
-      'disabled'
-    );
-
-    outBtn.classList.remove(
-      'disabled'
-    );
-
-  } else {
-
-    inBtn.classList.add(
-      'disabled'
-    );
-
-    outBtn.classList.add(
-      'disabled'
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   ステータス
-========================================================= */
-
-function updateStatus() {
-
-  const status =
-    $('status');
-
-
-  status.className =
-    'status';
-
-
-  if (!currentStore) {
-
-    status.textContent =
-      '店舗を選択してください。';
-
-    updatePunchButtons();
-
+  if(!url || url.includes('ここにGASのウェブアプリURLを貼り付け')){
+    $('message').innerHTML =
+      `<div class="err">GASのウェブアプリURLがHTML内に設定されていません。</div>`;
     return;
-
   }
 
-
-  if (!currentName) {
-
-    status.textContent =
-      '職員を選択してください。';
-
-    updatePunchButtons();
-
+  if(!currentStore || !currentName){
+    alert('従業員を選択してください。');
     return;
-
   }
 
+  const store = currentStore;
+  const name = currentName;
+  const d = new Date();
+  const date = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  const time = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 
-  status.textContent =
-    `【${currentStore}】${currentName} さんの打刻ができます。`;
+  const payload = { date: date, store: store, name: name, in: '', out: '' };
 
-
-  updatePunchButtons();
-
-}
-
-
-/* =========================================================
-   ローディング
-========================================================= */
-
-function showLoading() {
-
-  $('loading')
-    .classList
-    .add('show');
-
-}
-
-
-function hideLoading() {
-
-  $('loading')
-    .classList
-    .remove('show');
-
-}
-
-
-/* =========================================================
-   ステータス変更
-========================================================= */
-
-function setStatus(
-  message,
-  type = ''
-) {
-
-  const status =
-    $('status');
-
-
-  status.textContent =
-    message;
-
-
-  status.className =
-    'status';
-
-
-  if (type) {
-
-    status.classList.add(
-      type
-    );
-
+  if(action === 'in'){
+    payload.in = time;
+  }else{
+    payload.out = time;
   }
 
-}
-
-
-/* =========================================================
-   完了表示
-========================================================= */
-
-function showComplete(
-  action,
-  time
-) {
-
-  const complete =
-    $('complete');
-
-
-  const title =
-    $('completeTitle');
-
-
-  const completeTime =
-    $('completeTime');
-
-
-  if (action === 'in') {
-
-    title.textContent =
-      '出勤を記録しました';
-
-  } else {
-
-    title.textContent =
-      '退勤を記録しました';
-
-  }
-
-
-  completeTime.textContent =
-    `${currentName}　${time}`;
-
-
-  complete.classList.add(
-    'show'
-  );
-
-
-  setTimeout(() => {
-
-    complete.classList.remove(
-      'show'
-    );
-
-  }, 4000);
-
-}
-
-
-/* =========================================================
-   打刻
-========================================================= */
-
-async function punch(action) {
-
-  /* -------------------------
-     選択チェック
-  ------------------------- */
-
-  if (
-    !currentStore ||
-    !currentName
-  ) {
-
-    setStatus(
-      '店舗と職員を選択してください。',
-      'error'
-    );
-
-    return;
-
-  }
-
-
-  /* -------------------------
-     GAS URLチェック
-  ------------------------- */
-
-  if (
-    !GAS_URL ||
-    GAS_URL.indexOf(
-      'https://script.google.com/'
-    ) !== 0
-  ) {
-
-    setStatus(
-      'GASのURLが設定されていません。',
-      'error'
-    );
-
-    return;
-
-  }
-
-
-  /* -------------------------
-     打刻時刻
-  ------------------------- */
-
-  const date =
-    getDateString();
-
-  const time =
-    getTimeString();
-
-
-  /* -------------------------
-     送信データ
-  ------------------------- */
-
-  const payload = {
-
-    date: date,
-
-    store: currentStore,
-
-    name: currentName,
-
-    in: '',
-
-    out: ''
-
-  };
-
-
-  if (action === 'in') {
-
-    payload.in =
-      time;
-
-  } else {
-
-    payload.out =
-      time;
-
-  }
-
-
-  /* -------------------------
-     二重送信防止
-  ------------------------- */
-
-  const buttons = [
-    $('punchIn'),
-    $('punchOut')
-  ];
-
-
-  buttons.forEach(button => {
-
-    button.disabled = true;
-
-  });
-
-
-  showLoading();
-
-
-  setStatus(
-    action === 'in'
-      ? '出勤を送信しています…'
-      : '退勤を送信しています…'
-  );
-
-
-  try {
-
-    /* =====================================================
-       GASへPOST
-       
-       URLはHTML上部のGAS_URLを使用
-       ===================================================== */
-
-    const response =
-      await fetch(
-        GAS_URL,
-        {
-
-          method: 'POST',
-
-          mode: 'cors',
-
-          redirect: 'follow',
-
-          headers: {
-            'Content-Type':
-              'text/plain;charset=utf-8'
-          },
-
-          body:
-            JSON.stringify(payload)
-
-        }
-      );
-
-
-    /* -------------------------
-       HTTPエラー
-    ------------------------- */
-
-    if (!response.ok) {
-
-      throw new Error(
-        `HTTP ${response.status}`
-      );
-
-    }
-
-
-    /* -------------------------
-       GASからの返答
-    ------------------------- */
-
-    let result = null;
-
-
-    try {
-
-      result =
-        await response.json();
-
-    } catch (jsonError) {
-
-      /*
-       * GAS側がJSONではなく
-       * 空レスポンスを返す場合でも、
-       * HTTP通信自体が成功していれば
-       * 打刻成功として扱います。
-       */
-
-      result = null;
-
-    }
-
-
-    /* -------------------------
-       GAS側エラー
-    ------------------------- */
-
-    if (
-      result &&
-      result.success === false
-    ) {
-
-      throw new Error(
-        result.message ||
-        'GAS側でエラーが発生しました。'
-      );
-
-    }
-
-
-    /* -------------------------
-       成功
-    ------------------------- */
-
-    localStorage.setItem(
-      PUNCH_KEY,
-      JSON.stringify({
-        date: date,
-        store: currentStore,
-        name: currentName,
-        action: action,
-        time: time
-      })
-    );
-
-
-    hideLoading();
-
-
-    showComplete(
-      action,
-      time
-    );
-
-
-    setStatus(
-      action === 'in'
-        ? '出勤を記録しました。'
-        : '退勤を記録しました。',
-      'success'
-    );
-
-
-    /*
-     * ★重要
-     *
-     * ここではページを
-     * reload()しません。
-     *
-     * そのため、
-     * 「出勤を押したあと更新しないと
-     * 退勤ボタンが使えない」
-     * という問題を防ぎます。
-     */
-
-    updatePunchButtons();
-
-
-  } catch (error) {
-
-    console.error(
-      '打刻エラー:',
-      error
-    );
-
-
-    hideLoading();
-
-
-    setStatus(
-      `送信に失敗しました。${error.message || ''}`,
-      'error'
-    );
-
-
-  } finally {
-
-    /*
-     * ボタンを再び使用可能にする
-     */
-
-    buttons.forEach(button => {
-
-      button.disabled =
-        false;
-
+  $('inBtn').disabled = true;
+  $('outBtn').disabled = true;
+  $('message').innerHTML =
+    `<div class="sending">${action === 'in' ? '出勤' : '退勤'}を送信しています…</div>`;
+
+  try{
+    const res = await fetch(url, {
+      method: 'POST',
+      mode: 'cors',
+      redirect: 'follow',
+      body: JSON.stringify(payload)
     });
 
-
-    updatePunchButtons();
-
-  }
-
-}
-
-
-/* =========================================================
-   初期化
-========================================================= */
-
-function init() {
-
-  /* -------------------------
-     最後の選択を復元
-  ------------------------- */
-
-  try {
-
-    const saved =
-      localStorage.getItem(
-        LAST_KEY
+    const text = await res.text();
+    let data;
+    try{
+      data = JSON.parse(text);
+    }catch(_){
+      throw new Error(
+        'GASからの応答がJSONではありません。デプロイ設定・URLを確認してください。本文: ' +
+        text.slice(0, 200)
       );
-
-
-    if (saved) {
-
-      const data =
-        JSON.parse(saved);
-
-
-      if (
-        data &&
-        STORES.includes(
-          data.store
-        )
-      ) {
-
-        currentStore =
-          data.store;
-
-
-        if (
-          data.name &&
-          EMP[currentStore] &&
-          EMP[currentStore].includes(
-            data.name
-          )
-        ) {
-
-          currentName =
-            data.name;
-
-        }
-
-      }
-
     }
 
-  } catch (error) {
+    if(data.status !== 'ok'){
+      throw new Error(data.message || 'GAS側でエラーが発生しました');
+    }
 
-    console.warn(
-      '保存状態の復元に失敗:',
-      error
-    );
+    if(action === 'in'){
+      setPunchState(store, name, date, { in: true, inTime: time });
+      $('message').innerHTML =
+        `<div class="success">
+          出勤を記録しました（最新時刻で上書き）。<br>
+          日時：${date} ${time}<br>
+          店舗：${store}<br>
+          氏名：${name}
+        </div>`;
+    }else{
+      setPunchState(store, name, date, { out: true, outTime: time });
+      $('message').innerHTML =
+        `<div class="success">
+          退勤を記録しました（最新時刻で上書き）。<br>
+          日時：${date} ${time}<br>
+          店舗：${store}<br>
+          氏名：${name}
+        </div>`;
+    }
 
+    updateStatus();
+
+  }catch(err){
+    console.error(err);
+    $('message').innerHTML =
+      `<div class="err">
+        送信に失敗しました。<br>
+        ${String(err.message || err)}<br><br>
+        確認事項：<br>
+        ・GAS URLが /exec で終わっているか<br>
+        ・デプロイで「新しいバージョン」を作成したか<br>
+        ・アクセスできるユーザーが「全員」になっているか<br>
+        ・ブラウザの開発者ツール → Network でリクエスト結果を確認
+      </div>`;
+    updateStatus();
   }
-
-
-  renderStores();
-
-  renderEmployees();
-
-  updateSelected();
-
-  updateStatus();
-
-  updateClock();
-
 }
 
+// ============================================================
+// 起動
+// ============================================================
+function init(){
+  renderStoreGrid();
+  displayNow();
 
-/* =========================================================
-   時計開始
-========================================================= */
+  // 前回選択していた店舗・従業員があれば、そのまま出退勤画面へ
+  try{
+    const last = JSON.parse(localStorage.getItem(LAST_KEY) || 'null');
+    if(last && last.store && last.name && EMP.some(x => x[0] === last.store && x[1] === last.name)){
+      currentStore = last.store;
+      currentName = last.name;
+      $('headerTitle').textContent = currentStore + '調剤薬局';
+      $('selectedLabel').textContent = `【${currentStore}】${currentName} さん`;
+      $('selectedLabel').style.background = STORE_COLORS[currentStore] || 'var(--btn)';
+      $('selectedLabel').style.color = '#fff';
+      showStep('punchStep');
+      updateStatus();
+      return;
+    }
+  }catch(_){}
 
-setInterval(
-  updateClock,
-  1000
-);
+  showStep('storeStep');
+}
 
-
-/* =========================================================
-   起動
-========================================================= */
-
-document.addEventListener(
-  'DOMContentLoaded',
-  init
-);
-
+init();
 </script>
-
 </body>
 </html>
