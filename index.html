@@ -1,578 +1,314 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#2C6E7F">
-<title>タイムカード</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>勤怠打刻システム</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-:root{
-  --bg:#1f5c6d;
-  --bg2:#2f7c8d;
-  --card:#3e8798;
-  --card-border:#4f97a6;
-  --clock-bg:#10181b;
-  --clock-text:#f4fbfd;
-  --btn:#8fcbe0;
-  --btn-text:#123642;
-  --btn-disabled:#5f97a4;
-  --btn-disabled-text:#9fc3cb;
-  --out:#e8747a;
-  --text-soft:#d9eef2;
-  --toast-ok-bg:#1f4f3d;
-  --toast-ok-border:#3f9c72;
-  --toast-ok-text:#bdf0d3;
-  --toast-err-bg:#5a2430;
-  --toast-err-border:#c65361;
-  --toast-err-text:#ffd3d8;
-}
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #f4f6f8;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
 
-body{
-  margin:0;
-  min-height:100vh;
-  display:flex;
-  align-items:flex-start;
-  justify-content:center;
-  padding:40px 16px;
-  background:radial-gradient(120% 140% at 20% -10%, var(--bg2), var(--bg) 60%);
-  color:var(--text-soft);
-  font-family:'M PLUS Rounded 1c','Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;
-}
+    .container {
+      width: 100%;
+      max-width: 500px;
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
 
-.app{
-  width:100%;
-  max-width:460px;
-  background:var(--card);
-  border:1px solid var(--card-border);
-  border-radius:24px;
-  padding:22px;
-  box-shadow:0 20px 50px rgba(0,0,0,.25);
-}
+    h1 {
+      font-size: 1.4rem;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
 
-.head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:16px;
-}
+    /* --------------------------------------------------
+     * 大きな通知バナーのスタイル
+     * -------------------------------------------------- */
+    #notice-banner {
+      display: none;
+      background-color: #e6f4ea; /* マイルドなミントグリーン */
+      color: #137333;
+      border: 2px solid #34a853;
+      border-radius: 12px;
+      padding: 20px 16px;
+      margin-bottom: 20px;
+      font-size: 1.4rem; /* 大きなフォント */
+      font-weight: bold;
+      text-align: center;
+      line-height: 1.4;
+      box-shadow: 0 4px 12px rgba(52, 168, 83, 0.15);
+      transition: opacity 0.3s ease;
+      opacity: 0;
+    }
 
-h1{
-  font-size:20px;
-  font-weight:800;
-  margin:0;
-  color:#fff;
-  letter-spacing:.02em;
-}
+    .form-group {
+      margin-bottom: 18px;
+    }
 
-.clock{
-  background:var(--clock-bg);
-  border-radius:16px;
-  padding:26px 16px;
-  text-align:center;
-  margin-bottom:18px;
-}
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+      color: #555;
+    }
 
-.clock .date{
-  font-size:17px;
-  color:#9fb4b8;
-  margin-bottom:4px;
-  letter-spacing:.04em;
-}
+    select {
+      width: 100%;
+      padding: 14px;
+      font-size: 1.1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #fff;
+      appearance: none;
+      cursor: pointer;
+    }
 
-.clock .time{
-  font-size:64px;
-  font-weight:800;
-  color:var(--clock-text);
-  letter-spacing:.02em;
-  font-variant-numeric:tabular-nums;
-}
+    select:focus {
+      outline: none;
+      border-color: #1a73e8;
+    }
 
-.steplabel{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:15px;
-  font-weight:700;
-  color:#eafbff;
-  margin-bottom:12px;
-}
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
 
-.resetbtn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-height:38px;
-  padding:0 14px;
-  border-radius:10px;
-  border:0;
-  background:var(--btn);
-  color:#fff;
-  font-size:15px;
-  font-weight:700;
-  cursor:pointer;
-  text-shadow:0 1px 3px rgba(0,0,0,.25);
-}
+    .btn {
+      flex: 1;
+      padding: 18px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
 
-.storegrid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-}
+    .btn:active {
+      transform: scale(0.98);
+    }
 
-.storebtn{
-  height:90px;
-  border:0;
-  border-radius:14px;
-  background:var(--btn);
-  color:#fff;
-  font-size:26px;
-  font-weight:800;
-  cursor:pointer;
-  text-shadow:0 1px 3px rgba(0,0,0,.25);
-}
+    .btn-in {
+      background-color: #1a73e8;
+      color: white;
+    }
 
-.empgrid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-}
+    .btn-in:hover {
+      background-color: #1557b0;
+    }
 
-.empbtn{
-  height:76px;
-  border:0;
-  border-radius:14px;
-  background:var(--btn);
-  color:#fff;
-  font-size:24px;
-  font-weight:800;
-  cursor:pointer;
-  text-shadow:0 1px 3px rgba(0,0,0,.25);
-}
+    .btn-out {
+      background-color: #ea4335;
+      color: white;
+    }
 
-.selected-banner{
-  border-radius:14px;
-  padding:16px;
-  text-align:center;
-  margin-bottom:14px;
-}
-
-.selected-banner .who{
-  font-size:30px;
-  font-weight:800;
-  color:#fff;
-}
-
-.buttons{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:11px;
-  margin-top:4px;
-}
-
-.punch{
-  height:120px;
-  border:0;
-  border-radius:16px;
-  color:var(--btn-text);
-  font-size:36px;
-  font-weight:800;
-  background:var(--btn);
-  cursor:pointer;
-}
-
-.punch.out{
-  background:var(--out);
-  color:#3a0e10;
-}
-
-.punch:disabled{
-  background:var(--btn-disabled);
-  color:var(--btn-disabled-text);
-  cursor:not-allowed;
-}
-
-.status{
-  font-size:13px;
-  line-height:1.7;
-  color:var(--text-soft);
-  margin-bottom:10px;
-  text-align:center;
-  min-height:1.7em;
-}
-
-.hidden{ display:none !important; }
-
-#toast{
-  position:fixed;
-  left:50%;
-  bottom:28px;
-  transform:translateX(-50%) translateY(10px);
-  max-width:90vw;
-  padding:14px 20px;
-  border-radius:12px;
-  font-size:14px;
-  font-weight:700;
-  line-height:1.6;
-  white-space:pre-line;
-  box-shadow:0 10px 30px rgba(0,0,0,.35);
-  z-index:1000;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .25s ease, transform .25s ease;
-}
-
-#toast.show{
-  opacity:1;
-  transform:translateX(-50%) translateY(0);
-}
-
-#toast.ok{
-  background:var(--toast-ok-bg);
-  border:1px solid var(--toast-ok-border);
-  color:var(--toast-ok-text);
-}
-
-#toast.error{
-  background:var(--toast-err-bg);
-  border:1px solid var(--toast-err-border);
-  color:var(--toast-err-text);
-}
-</style>
+    .btn-out:hover {
+      background-color: #c5221f;
+    }
+  </style>
 </head>
 <body>
-<div class="app">
 
-  <div class="head">
-    <h1>タイムカード</h1>
+  <div class="container">
+    <h1>勤怠打刻</h1>
+
+    <!-- 視認性の高い大きな通知エリア -->
+    <div id="notice-banner"></div>
+
+    <form id="attendance-form" onsubmit="return false;">
+      <div class="form-group">
+        <label for="store-select">店舗を選択</label>
+        <select id="store-select" onchange="updateEmployeeOptions()">
+          <option value="">-- 店舗を選択してください --</option>
+          <option value="錦町">錦町</option>
+          <option value="入船">入船</option>
+          <option value="メルヘン">メルヘン</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="name-select">従業員を選択</label>
+        <select id="name-select">
+          <option value="">-- 先に店舗を選択してください --</option>
+        </select>
+      </div>
+
+      <div class="button-group">
+        <button type="button" class="btn btn-in" onclick="submitAttendance('in')">出勤</button>
+        <button type="button" class="btn btn-out" onclick="submitAttendance('out')">退勤</button>
+      </div>
+    </form>
   </div>
 
-  <div class="clock">
-    <div class="date" id="clockDate">----/--/--</div>
-    <div class="time" id="clockTime">--:--:--</div>
-  </div>
+  <script>
+    // ==================================================
+    // 【設定】デプロイしたGoogle Apps ScriptのWebアプリURLを入力してください
+    // ==================================================
+    const GAS_WEBAPP_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
 
-  <!-- STEP 1：店舗選択 -->
-  <section id="storeStep" class="step">
-    <div class="steplabel">店舗を選択してください</div>
-    <div class="storegrid" id="storeGrid"></div>
-  </section>
+    // 各店舗の従業員リスト（STORE_LAYOUTと一致させる）
+    const EMPLOYEES_BY_STORE = {
+      "錦町": ["神野", "横川", "渡邉", "戸澤", "松本", "根本"],
+      "入船": ["小野寺", "増見", "阿部", "渡邊"],
+      "メルヘン": ["齊藤", "大橋", "福井", "小谷"]
+    };
 
-  <!-- STEP 2：従業員選択 -->
-  <section id="empStep" class="step hidden">
-    <div class="steplabel">
-      <button class="resetbtn" id="backToStore">店舗を選びなおす</button>
-    </div>
-    <div class="steplabel">名前を選択してください</div>
-    <div class="empgrid" id="empGrid"></div>
-  </section>
+    /**
+     * 店舗選択変更時に従業員の選択肢を更新する
+     */
+    function updateEmployeeOptions() {
+      const storeSelect = document.getElementById("store-select");
+      const nameSelect = document.getElementById("name-select");
+      const selectedStore = storeSelect.value;
 
-  <!-- STEP 3：出勤・退勤 -->
-  <section id="punchStep" class="step hidden">
-    <div class="steplabel">
-      <button class="resetbtn" id="backToEmp">名前を選びなおす</button>
-    </div>
-    <div class="selected-banner" id="selectedBanner">
-      <div class="who" id="selectedLabel"></div>
-    </div>
-    <div class="status" id="status"></div>
-    <div class="buttons">
-      <button id="inBtn" class="punch in" onclick="punch('in')">出勤</button>
-      <button id="outBtn" class="punch out" onclick="punch('out')">退勤</button>
-    </div>
-  </section>
+      nameSelect.innerHTML = "";
 
-</div>
-
-<div id="toast"></div>
-
-<script>
-// ============================================================
-// 店舗・従業員一覧
-// ============================================================
-const STORES = ['錦町','入船','メルヘン'];
-const STORE_COLORS = {
-  '錦町': '#70ad47',
-  '入船': '#5b9bd5',
-  'メルヘン': '#c27ba0'
-};
-const EMP = [
-  ['錦町','神野'],
-  ['錦町','横川'],
-  ['錦町','渡邉'],
-  ['錦町','戸澤'],
-  ['錦町','松本'],
-  ['錦町','根本'],
-  ['入船','小野寺'],
-  ['入船','増見'],
-  ['入船','阿部'],
-  ['入船','渡邊'],
-  ['メルヘン','齊藤'],
-  ['メルヘン','大橋'],
-  ['メルヘン','福井'],
-  ['メルヘン','小谷']
-];
-
-// ============================================================
-// Google Apps Script URL
-// ここにGASウェブアプリの /exec URL を設定してください。
-// 職員側の画面から変更・保存することはできません。
-// ============================================================
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyZ-lB5gCIYEh2bWPfDeFgyyhV_jGPqX7-FwjKAZvw-XLJupW9E0t86l8HYNPoigo1T/exec';
-
-const PUNCH_KEY = '勤怠打刻状態';
-const $ = id => document.getElementById(id);
-
-let currentStore = null;
-let currentName = null;
-
-// ============================================================
-// ユーティリティ
-// ============================================================
-function pad(n){
-  return String(n).padStart(2,'0');
-}
-
-function todayStr(){
-  const d = new Date();
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-}
-
-function displayNow(){
-  const d = new Date();
-  $('clockDate').textContent =
-    `${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())}`;
-  $('clockTime').textContent =
-    `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-  setTimeout(displayNow, 1000);
-}
-
-// ============================================================
-// トースト通知（画面リセット後もエラーだけ短時間表示する）
-// ============================================================
-let toastTimer = null;
-
-function showToast(type, text){
-  const el = $('toast');
-  el.textContent = text;
-  el.className = type === 'error' ? 'error' : 'ok';
-
-  requestAnimationFrame(() => el.classList.add('show'));
-
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => {
-    el.classList.remove('show');
-  }, type === 'error' ? 8000 : 8000);
-}
-
-// ============================================================
-// 打刻状態の読み書き（localStorage）
-// ============================================================
-function punchStateKey(store, name, date){
-  return `${date}_${store}_${name}`;
-}
-
-function getPunchState(store, name, date){
-  try{
-    const all = JSON.parse(localStorage.getItem(PUNCH_KEY) || '{}');
-    return all[punchStateKey(store, name, date)] || { in: false, out: false };
-  }catch(_){
-    return { in: false, out: false };
-  }
-}
-
-function setPunchState(store, name, date, partial){
-  try{
-    const all = JSON.parse(localStorage.getItem(PUNCH_KEY) || '{}');
-    const key = punchStateKey(store, name, date);
-    all[key] = Object.assign({}, all[key] || {}, partial);
-    const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - 30);
-    Object.keys(all).forEach(k => {
-      const d = k.split('_')[0];
-      if(d && new Date(d) < cutoff) delete all[k];
-    });
-    localStorage.setItem(PUNCH_KEY, JSON.stringify(all));
-  }catch(_){}
-}
-
-// ============================================================
-// 画面切り替え（店舗選択／従業員選択／出退勤）
-// ============================================================
-function showStep(step){
-  $('storeStep').classList.add('hidden');
-  $('empStep').classList.add('hidden');
-  $('punchStep').classList.add('hidden');
-  $(step).classList.remove('hidden');
-}
-
-function renderStoreGrid(){
-  const grid = $('storeGrid');
-  grid.innerHTML = '';
-  STORES.forEach(store => {
-    const b = document.createElement('button');
-    b.className = 'storebtn';
-    b.textContent = store;
-    b.style.background = STORE_COLORS[store] || 'var(--btn)';
-    b.onclick = () => selectStore(store);
-    grid.appendChild(b);
-  });
-}
-
-function renderEmpGrid(){
-  const grid = $('empGrid');
-  grid.innerHTML = '';
-  EMP.filter(x => x[0] === currentStore).forEach(x => {
-    const b = document.createElement('button');
-    b.className = 'empbtn';
-    b.textContent = x[1];
-    b.style.background = STORE_COLORS[currentStore] || 'var(--btn)';
-    b.onclick = () => selectEmployee(x[1]);
-    grid.appendChild(b);
-  });
-}
-
-function selectStore(store){
-  currentStore = store;
-  currentName = null;
-  renderEmpGrid();
-  showStep('empStep');
-}
-
-function selectEmployee(name){
-  currentName = name;
-
-  $('selectedLabel').textContent = `【${currentStore}】${currentName} さん`;
-  $('selectedBanner').style.background = STORE_COLORS[currentStore] || 'var(--btn)';
-
-  showStep('punchStep');
-  updateStatus();
-}
-
-function resetToStoreSelection(){
-  currentStore = null;
-  currentName = null;
-  renderStoreGrid();
-  showStep('storeStep');
-}
-
-$('backToStore').onclick = () => {
-  currentName = null;
-  renderStoreGrid();
-  showStep('storeStep');
-};
-
-$('backToEmp').onclick = () => {
-  renderEmpGrid();
-  showStep('empStep');
-};
-
-// ============================================================
-// ステータス表示（直近の出勤・退勤時刻だけ表示。定型文は出さない）
-// ============================================================
-function updateStatus(){
-  if(!currentStore || !currentName) return;
-
-  const date = todayStr();
-  const st = getPunchState(currentStore, currentName, date);
-  const parts = [];
-
-  if(st.in && st.inTime) parts.push(`直近の出勤：${st.inTime}`);
-  if(st.out && st.outTime) parts.push(`直近の退勤：${st.outTime}`);
-
-  $('status').textContent = parts.join(' / ');
-  $('inBtn').disabled = false;
-  $('outBtn').disabled = false;
-}
-
-// ============================================================
-// 打刻
-// 押した瞬間に画面は店舗選択までリセットし、待たせない。
-// 実際のGASへの送信・書き込みはバックグラウンドで行い、
-// 失敗したときだけ画面下にトースト通知を出す。
-// ============================================================
-function punch(action){
-  const url = GAS_URL;
-
-  if(!currentStore || !currentName) return;
-
-  if(!url || url.includes('ここにGASのウェブアプリURLを貼り付け')){
-    showToast('error', 'GASのウェブアプリURLがHTML内に設定されていません。');
-    return;
-  }
-
-  const store = currentStore;
-  const name = currentName;
-  const d = new Date();
-  const date = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-  const time = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-
-  const payload = { date: date, store: store, name: name, in: '', out: '' };
-
-  if(action === 'in'){
-    payload.in = time;
-    setPunchState(store, name, date, { in: true, inTime: time });
-  }else{
-    payload.out = time;
-    setPunchState(store, name, date, { out: true, outTime: time });
-  }
-
-  // 画面はすぐに店舗選択まで戻す（送信結果を待たない）
-  resetToStoreSelection();
-
-  // 送信はバックグラウンドで実行
-  fetch(url, {
-    method: 'POST',
-    mode: 'cors',
-    redirect: 'follow',
-    body: JSON.stringify(payload)
-  })
-    .then(async res => {
-      const text = await res.text();
-      let data;
-      try{
-        data = JSON.parse(text);
-      }catch(_){
-        throw new Error('GASからの応答がJSONではありません。デプロイ設定・URLを確認してください。');
+      if (!selectedStore || !EMPLOYEES_BY_STORE[selectedStore]) {
+        nameSelect.innerHTML = '<option value="">-- 先に店舗を選択してください --</option>';
+        return;
       }
-      if(data.status !== 'ok'){
-        throw new Error(data.message || 'GAS側でエラーが発生しました');
+
+      const defaultOpt = document.createElement("option");
+      defaultOpt.value = "";
+      defaultOpt.textContent = "-- 氏名を選択してください --";
+      nameSelect.appendChild(defaultOpt);
+
+      EMPLOYEES_BY_STORE[selectedStore].forEach(name => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        nameSelect.appendChild(opt);
+      });
+    }
+
+    /**
+     * 出勤／退勤ボタン押下時のメイン処理
+     * @param {string} mode 'in' または 'out'
+     */
+    function submitAttendance(mode) {
+      const storeSelect = document.getElementById("store-select");
+      const nameSelect = document.getElementById("name-select");
+
+      const store = storeSelect.value;
+      const name = nameSelect.value;
+
+      if (!store || !name) {
+        alert("店舗と氏名の両方を選択してください。");
+        return;
       }
-      // ★デバッグ用★ 送信した日付と、実際にシートへ書き込まれた
-      // 表示上の日付を突き合わせて表示する（原因切り分け用。解決後は
-      // 元の短いメッセージに戻してOKです）。
-      showToast(
-        'ok',
-        `${store}・${name}さんの${action === 'in' ? '出勤' : '退勤'}を記録しました（${time}）\n` +
-        `送信日付：${date}\n` +
-        `書き込まれた日付：${data.writtenDateDisplay}\n` +
-        `サーバー時刻：${data.serverNow}\n` +
-        `スクリプトTZ：${data.scriptTimeZone}`
-      );
-    })
-    .catch(err => {
-      console.error(err);
-      showToast(
-        'error',
-        `${store}・${name}さんの${action === 'in' ? '出勤' : '退勤'}の送信に失敗しました。${String(err.message || err)}`
-      );
-    });
-}
 
-// ============================================================
-// 起動
-// 毎回、必ず店舗選択から始める（共有端末のため前回選択は保持しない）
-// ============================================================
-function init(){
-  displayNow();
-  resetToStoreSelection();
-}
+      // 1. 日時の生成
+      const now = new Date();
+      const dateStr = formatDate(now);     // YYYY-MM-DD
+      const timeStr = formatTime(now);     // HH:MM
+      const fullDateTimeDisplay = `${formatDisplayDate(now)} ${timeStr}`;
 
-init();
-</script>
+      const typeLabel = mode === 'in' ? '出勤' : '退勤';
+
+      // 2. 【即時処理】通知を大きく表示 ＆ フォーム要素をクリア
+      showBigNotice(`${fullDateTimeDisplay} ${name} ${typeLabel}を記録しました`);
+      resetForm();
+
+      // 3. 【バックグラウンド処理】GASへ非同期送信（画面の完了を待たない）
+      const payload = {
+        date: dateStr,
+        store: store,
+        name: name
+      };
+
+      if (mode === 'in') {
+        payload.in = timeStr;
+      } else {
+        payload.out = timeStr;
+      }
+
+      fetch(GAS_WEBAPP_URL, {
+        method: "POST",
+        mode: "no-cors", // GASのリダイレクトによるCORSエラー回避
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams(payload)
+      })
+      .then(() => {
+        console.log("裏での記録処理が完了しました");
+      })
+      .catch(err => {
+        console.error("記録エラー:", err);
+      });
+    }
+
+    /**
+     * 大きな通知メッセージを表示し、一定時間後にフェードアウトする
+     */
+    let noticeTimer = null;
+    function showBigNotice(message) {
+      const banner = document.getElementById("notice-banner");
+
+      if (noticeTimer) clearTimeout(noticeTimer);
+
+      banner.innerText = message;
+      banner.style.display = "block";
+      
+      // レンダリング待ちを入れてフェードインさせる
+      setTimeout(() => {
+        banner.style.opacity = "1";
+      }, 10);
+
+      // 5秒後に消去
+      noticeTimer = setTimeout(() => {
+        banner.style.opacity = "0";
+        setTimeout(() => {
+          banner.style.display = "none";
+        }, 300);
+      }, 5000);
+    }
+
+    /**
+     * 入力画面を初期状態に戻す（即時リセット）
+     */
+    function resetForm() {
+      document.getElementById("store-select").value = "";
+      updateEmployeeOptions();
+    }
+
+    // --- 補助関数（日付・時刻フォーマット） ---
+    function formatDate(d) {
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function formatDisplayDate(d) {
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return `${yyyy}/${mm}/${dd}`;
+    }
+
+    function formatTime(d) {
+      const hh = String(d.getHours()).padStart(2, '0');
+      const mm = String(d.getMinutes()).padStart(2, '0');
+      return `${hh}:${mm}`;
+    }
+  </script>
 </body>
 </html>
