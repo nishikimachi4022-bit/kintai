@@ -218,6 +218,7 @@ h1{
   font-size:14px;
   font-weight:700;
   line-height:1.6;
+  white-space:pre-line;
   box-shadow:0 10px 30px rgba(0,0,0,.35);
   z-index:1000;
   opacity:0;
@@ -365,7 +366,7 @@ function showToast(type, text){
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
     el.classList.remove('show');
-  }, type === 'error' ? 6000 : 3000);
+  }, type === 'error' ? 8000 : 8000);
 }
 
 // ============================================================
@@ -541,9 +542,16 @@ function punch(action){
       if(data.status !== 'ok'){
         throw new Error(data.message || 'GAS側でエラーが発生しました');
       }
+      // ★デバッグ用★ 送信した日付と、実際にシートへ書き込まれた
+      // 表示上の日付を突き合わせて表示する（原因切り分け用。解決後は
+      // 元の短いメッセージに戻してOKです）。
       showToast(
         'ok',
-        `${store}・${name}さんの${action === 'in' ? '出勤' : '退勤'}を記録しました（${time}）`
+        `${store}・${name}さんの${action === 'in' ? '出勤' : '退勤'}を記録しました（${time}）\n` +
+        `送信日付：${date}\n` +
+        `書き込まれた日付：${data.writtenDateDisplay}\n` +
+        `サーバー時刻：${data.serverNow}\n` +
+        `スクリプトTZ：${data.scriptTimeZone}`
       );
     })
     .catch(err => {
