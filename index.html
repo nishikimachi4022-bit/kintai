@@ -1,3 +1,36 @@
+貼り付けられたテキスト（1 点）(7).txt
+ドキュメント
+タイムカードのhtmlのレイアウトをいじってもらいたいです。
+
+タイムカードの文字を中心になる様にしてほしいのと、
+
+時間の表示を
+2026/09/30 
+17:33:01　と2列になっていますが
+
+2026/09/30  17:33:01　 と白字で同じ文字のサイズで1列に表示されるようにしてほしいです。
+
+あと、秒数は表示させないでください
+
+あと、時間の縦幅を小さくして全体的に上に詰めたいので、縦幅を現在の1/2にしてほしいです。
+
+あと、選びなおすボタン　選択して下さいの文字の右に配置してほしいです。ボタンの縦幅は選択して下さいの文字に合うように調整して下さい。
+
+修正しました。ご希望の内容を反映したHTMLです。
+
+「タイムカード」を中央寄せ
+日付と時刻を1列表示
+日付・時刻とも白字・同じ文字サイズ
+秒表示を削除
+時計部分の縦幅を約1/2に圧縮
+「店舗を選びなおす」を「名前を選択してください」の右側へ配置
+ボタンの高さを文字の高さに合わせて調整
+打刻処理やGoogleスプレッドシートへの送信処理は変更していません
+
+完成版はこちらです：
+
+timecard_layout_updated.html をダウンロード 
+
 <!doctype html>
 <html lang="ja">
 <head>
@@ -57,7 +90,7 @@ body{
 .head{
   display:flex;
   align-items:center;
-  justify-content:space-between;
+  justify-content:center;
   margin-bottom:16px;
 }
 
@@ -70,28 +103,26 @@ h1{
 }
 
 .clock{
-  background:var(--clock-bg);
-  border-radius:16px;
-  padding:26px 16px;
-  text-align:center;
-  margin-bottom:18px;
+   background:var(--clock-bg);
+   border-radius:16px;
+   padding:13px 16px;
+   text-align:center;
+   margin-bottom:9px;
+}
+
+.clock .date,
+.clock .time{
+   display:inline;
+   font-size:clamp(24px, 8vw, 36px);
+   font-weight:800;
+   color:var(--clock-text);
+   letter-spacing:.02em;
+   font-variant-numeric:tabular-nums;
+   white-space:nowrap;
 }
 
 .clock .date{
-  font-size:17px;
-  color:#9fb4b8;
-  margin-bottom:4px;
-  letter-spacing:.04em;
-}
-
-/* 画面幅に合わせて自動縮小し、はみ出しを防ぐ調整 */
-.clock .time{
-  font-size:clamp(32px, 11vw, 64px);
-  font-weight:800;
-  color:var(--clock-text);
-  letter-spacing:.02em;
-  font-variant-numeric:tabular-nums;
-  white-space:nowrap;
+   margin-right:16px;
 }
 
 .steplabel{
@@ -105,19 +136,26 @@ h1{
 }
 
 .resetbtn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-height:38px;
-  padding:0 14px;
-  border-radius:10px;
-  border:0;
-  background:var(--btn);
-  color:#fff;
-  font-size:15px;
-  font-weight:700;
-  cursor:pointer;
-  text-shadow:0 1px 3px rgba(0,0,0,.25);
+   display:inline-flex;
+   align-items:center;
+   justify-content:center;
+   min-height:0;
+   height:1.9em;
+   padding:0 10px;
+   border-radius:8px;
+   border:0;
+   background:var(--btn);
+   color:#fff;
+   font-size:15px;
+   font-weight:700;
+   line-height:1;
+   cursor:pointer;
+   text-shadow:0 1px 3px rgba(0,0,0,.25);
+}
+
+.selection-label{
+   justify-content:flex-start;
+   gap:10px;
 }
 
 .storegrid{
@@ -256,7 +294,7 @@ h1{
 
   <div class="clock">
     <div class="date" id="clockDate">----/--/--</div>
-    <div class="time" id="clockTime">--:--:--</div>
+    <div class="time" id="clockTime">--:--</div>
   </div>
 
   <!-- STEP 1：店舗選択 -->
@@ -267,10 +305,10 @@ h1{
 
   <!-- STEP 2：従業員選択 -->
   <section id="empStep" class="step hidden">
-    <div class="steplabel">
+    <div class="steplabel selection-label">
+      <span>名前を選択してください</span>
       <button class="resetbtn" id="backToStore">店舗を選びなおす</button>
     </div>
-    <div class="steplabel">名前を選択してください</div>
     <div class="empgrid" id="empGrid"></div>
   </section>
 
@@ -348,7 +386,7 @@ function displayNow(){
   $('clockDate').textContent =
     `${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())}`;
   $('clockTime').textContent =
-    `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    `${pad(d.getHours())}:${pad(d.getMinutes())}`;
   setTimeout(displayNow, 1000);
 }
 
@@ -566,3 +604,619 @@ init();
 </script>
 </body>
 </html>
+timecard_layout_updated.html
+HTML
+素晴らしいです。
+
+17:42　の:を1秒で点滅させることってできますか？
+
+はい、できます。
+
+17:42 の 「:」だけを1秒周期で点滅させることができます。
+つまり、
+
+17:42 → 17 42 → 17:42 → 17 42 …
+
+という表示になります。
+
+現在のHTMLにその機能を追加して、完成版のHTMLを作れます。
+
+追加して下さい
+
+追加しました。
+「17:42」の「:」だけが1秒周期で点滅します。
+
+更新版HTMLをダウンロード
+
+数字部分は常時表示で、秒も表示されません。 
+
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2C6E7F">
+<title>タイムカード</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+
+:root{
+  --bg:#1f5c6d;
+  --bg2:#2f7c8d;
+  --card:#3e8798;
+  --card-border:#4f97a6;
+  --clock-bg:#10181b;
+  --clock-text:#f4fbfd;
+  --btn:#8fcbe0;
+  --btn-text:#123642;
+  --btn-disabled:#5f97a4;
+  --btn-disabled-text:#9fc3cb;
+  --out:#e8747a;
+  --text-soft:#d9eef2;
+  --toast-ok-bg:#1f4f3d;
+  --toast-ok-border:#3f9c72;
+  --toast-ok-text:#bdf0d3;
+  --toast-err-bg:#5a2430;
+  --toast-err-border:#c65361;
+  --toast-err-text:#ffd3d8;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:40px 16px;
+  background:radial-gradient(120% 140% at 20% -10%, var(--bg2), var(--bg) 60%);
+  color:var(--text-soft);
+  font-family:'M PLUS Rounded 1c','Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+
+.app{
+  width:100%;
+  max-width:460px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:24px;
+  padding:22px;
+  box-shadow:0 20px 50px rgba(0,0,0,.25);
+}
+
+.head{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:16px;
+}
+
+h1{
+  font-size:20px;
+  font-weight:800;
+  margin:0;
+  color:#fff;
+  letter-spacing:.02em;
+}
+
+.clock{
+   background:var(--clock-bg);
+   border-radius:16px;
+   padding:13px 16px;
+   text-align:center;
+   margin-bottom:9px;
+}
+
+.clock .date,
+.clock .time{
+   display:inline;
+   font-size:clamp(24px, 8vw, 36px);
+   font-weight:800;
+   color:var(--clock-text);
+   letter-spacing:.02em;
+   font-variant-numeric:tabular-nums;
+   white-space:nowrap;
+}
+
+.clock .date{
+   margin-right:16px;
+}
+
+.clock-colon{
+   animation: clockColonBlink 1s step-start infinite;
+}
+
+@keyframes clockColonBlink{
+   0%, 49%{
+      opacity:1;
+   }
+   50%, 100%{
+      opacity:0;
+   }
+}
+
+.steplabel{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:15px;
+  font-weight:700;
+  color:#eafbff;
+  margin-bottom:12px;
+}
+
+.resetbtn{
+   display:inline-flex;
+   align-items:center;
+   justify-content:center;
+   min-height:0;
+   height:1.9em;
+   padding:0 10px;
+   border-radius:8px;
+   border:0;
+   background:var(--btn);
+   color:#fff;
+   font-size:15px;
+   font-weight:700;
+   line-height:1;
+   cursor:pointer;
+   text-shadow:0 1px 3px rgba(0,0,0,.25);
+}
+
+.selection-label{
+   justify-content:flex-start;
+   gap:10px;
+}
+
+.storegrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.storebtn{
+  height:90px;
+  border:0;
+  border-radius:14px;
+  background:var(--btn);
+  color:#fff;
+  font-size:26px;
+  font-weight:800;
+  cursor:pointer;
+  text-shadow:0 1px 3px rgba(0,0,0,.25);
+}
+
+.empgrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.empbtn{
+  height:76px;
+  border:0;
+  border-radius:14px;
+  background:var(--btn);
+  color:#fff;
+  font-size:24px;
+  font-weight:800;
+  cursor:pointer;
+  text-shadow:0 1px 3px rgba(0,0,0,.25);
+}
+
+.selected-banner{
+  border-radius:14px;
+  padding:16px;
+  text-align:center;
+  margin-bottom:14px;
+}
+
+.selected-banner .who{
+  font-size:30px;
+  font-weight:800;
+  color:#fff;
+}
+
+.buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:11px;
+  margin-top:4px;
+}
+
+.punch{
+  height:120px;
+  border:0;
+  border-radius:16px;
+  color:var(--btn-text);
+  font-size:36px;
+  font-weight:800;
+  background:var(--btn);
+  cursor:pointer;
+}
+
+.punch.out{
+  background:var(--out);
+  color:#3a0e10;
+}
+
+.punch:disabled{
+  background:var(--btn-disabled);
+  color:var(--btn-disabled-text);
+  cursor:not-allowed;
+}
+
+.status{
+  font-size:13px;
+  line-height:1.7;
+  color:var(--text-soft);
+  margin-bottom:10px;
+  text-align:center;
+  min-height:1.7em;
+}
+
+.hidden{ display:none !important; }
+
+#toast{
+  position:fixed;
+  left:50%;
+  bottom:28px;
+  transform:translateX(-50%) translateY(10px);
+  max-width:90vw;
+  padding:16px 24px;
+  border-radius:12px;
+  font-size:18px;
+  font-weight:700;
+  line-height:1.5;
+  white-space:pre-line;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  z-index:1000;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease, transform .25s ease;
+  text-align:center;
+}
+
+#toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+#toast.ok{
+  background:var(--toast-ok-bg);
+  border:1px solid var(--toast-ok-border);
+  color:var(--toast-ok-text);
+}
+
+#toast.error{
+  background:var(--toast-err-bg);
+  border:1px solid var(--toast-err-border);
+  color:var(--toast-err-text);
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="head">
+    <h1>タイムカード</h1>
+  </div>
+
+  <div class="clock">
+    <div class="date" id="clockDate">----/--/--</div>
+    <div class="time" id="clockTime"><span class="clock-hour">--</span><span class="clock-colon">:</span><span class="clock-minute">--</span></div>
+  </div>
+
+  <!-- STEP 1：店舗選択 -->
+  <section id="storeStep" class="step">
+    <div class="steplabel">店舗を選択してください</div>
+    <div class="storegrid" id="storeGrid"></div>
+  </section>
+
+  <!-- STEP 2：従業員選択 -->
+  <section id="empStep" class="step hidden">
+    <div class="steplabel selection-label">
+      <span>名前を選択してください</span>
+      <button class="resetbtn" id="backToStore">店舗を選びなおす</button>
+    </div>
+    <div class="empgrid" id="empGrid"></div>
+  </section>
+
+  <!-- STEP 3：出勤・退勤 -->
+  <section id="punchStep" class="step hidden">
+    <div class="steplabel">
+      <button class="resetbtn" id="backToEmp">名前を選びなおす</button>
+    </div>
+    <div class="selected-banner" id="selectedBanner">
+      <div class="who" id="selectedLabel"></div>
+    </div>
+    <div class="status" id="status"></div>
+    <div class="buttons">
+      <button id="inBtn" class="punch in" onclick="punch('in')">出勤</button>
+      <button id="outBtn" class="punch out" onclick="punch('out')">退勤</button>
+    </div>
+  </section>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ============================================================
+// 店舗・従業員一覧
+// ============================================================
+const STORES = ['錦町','入船','メルヘン'];
+const STORE_COLORS = {
+  '錦町': '#70ad47',
+  '入船': '#5b9bd5',
+  'メルヘン': '#c27ba0'
+};
+const EMP = [
+  ['錦町','神野'],
+  ['錦町','横川'],
+  ['錦町','渡邉'],
+  ['錦町','戸澤'],
+  ['錦町','松本'],
+  ['錦町','根本'],
+  ['入船','小野寺'],
+  ['入船','増見'],
+  ['入船','阿部'],
+  ['入船','渡邊'],
+  ['メルヘン','齊藤'],
+  ['メルヘン','大橋'],
+  ['メルヘン','福井'],
+  ['メルヘン','小谷']
+];
+
+// ============================================================
+// Google Apps Script URL
+// ============================================================
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyZ-lB5gCIYEh2bWPfDeFgyyhV_jGPqX7-FwjKAZvw-XLJupW9E0t86l8HYNPoigo1T/exec';
+
+const PUNCH_KEY = '勤怠打刻状態';
+const $ = id => document.getElementById(id);
+
+let currentStore = null;
+let currentName = null;
+
+// ============================================================
+// ユーティリティ
+// ============================================================
+function pad(n){
+  return String(n).padStart(2,'0');
+}
+
+function todayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+
+function displayNow(){
+  const d = new Date();
+  $('clockDate').textContent =
+    `${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())}`;
+  $('clockTime').querySelector('.clock-hour').textContent = pad(d.getHours());
+  $('clockTime').querySelector('.clock-minute').textContent = pad(d.getMinutes());
+  setTimeout(displayNow, 1000);
+}
+
+// ============================================================
+// トースト通知（大きめテキスト表示・自動消去）
+// ============================================================
+let toastTimer = null;
+
+function showToast(type, text){
+  const el = $('toast');
+  el.textContent = text;
+  el.className = type === 'error' ? 'error' : 'ok';
+
+  requestAnimationFrame(() => el.classList.add('show'));
+
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    el.classList.remove('show');
+  }, 4000);
+}
+
+// ============================================================
+// 打刻状態の読み書き（localStorage）
+// ============================================================
+function punchStateKey(store, name, date){
+  return `${date}_${store}_${name}`;
+}
+
+function getPunchState(store, name, date){
+  try{
+    const all = JSON.parse(localStorage.getItem(PUNCH_KEY) || '{}');
+    return all[punchStateKey(store, name, date)] || { in: false, out: false };
+  }catch(_){
+    return { in: false, out: false };
+  }
+}
+
+function setPunchState(store, name, date, partial){
+  try{
+    const all = JSON.parse(localStorage.getItem(PUNCH_KEY) || '{}');
+    const key = punchStateKey(store, name, date);
+    all[key] = Object.assign({}, all[key] || {}, partial);
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 30);
+    Object.keys(all).forEach(k => {
+      const d = k.split('_')[0];
+      if(d && new Date(d) < cutoff) delete all[k];
+    });
+    localStorage.setItem(PUNCH_KEY, JSON.stringify(all));
+  }catch(_){}
+}
+
+// ============================================================
+// 画面切り替え（店舗選択／従業員選択／出退勤）
+// ============================================================
+function showStep(step){
+  $('storeStep').classList.add('hidden');$('empStep').classList.add('hidden');
+  $('punchStep').classList.add('hidden');$(step).classList.remove('hidden');
+}
+
+function renderStoreGrid(){
+  const grid = $('storeGrid');
+  grid.innerHTML = '';
+  STORES.forEach(store => {
+    const b = document.createElement('button');
+    b.className = 'storebtn';
+    b.textContent = store;
+    b.style.background = STORE_COLORS[store] || 'var(--btn)';
+    b.onclick = () => selectStore(store);
+    grid.appendChild(b);
+  });
+}
+
+function renderEmpGrid(){
+  const grid = $('empGrid');
+  grid.innerHTML = '';
+  EMP.filter(x => x[0] === currentStore).forEach(x => {
+    const b = document.createElement('button');
+    b.className = 'empbtn';
+    b.textContent = x[1];
+    b.style.background = STORE_COLORS[currentStore] || 'var(--btn)';
+    b.onclick = () => selectEmployee(x[1]);
+    grid.appendChild(b);
+  });
+}
+
+function selectStore(store){
+  currentStore = store;
+  currentName = null;
+  renderEmpGrid();
+  showStep('empStep');
+}
+
+function selectEmployee(name){
+  currentName = name;
+
+  $('selectedLabel').textContent = `【${currentStore}】${currentName} さん`;
+  $('selectedBanner').style.background = STORE_COLORS[currentStore] || 'var(--btn)';
+
+  showStep('punchStep');
+  updateStatus();
+}
+
+function resetToStoreSelection(){
+  currentStore = null;
+  currentName = null;
+  renderStoreGrid();
+  showStep('storeStep');
+}
+
+$('backToStore').onclick = () => {
+  currentName = null;
+  renderStoreGrid();
+  showStep('storeStep');
+};
+
+$('backToEmp').onclick = () => {
+  renderEmpGrid();
+  showStep('empStep');
+};
+
+// ============================================================
+// ステータス表示
+// ============================================================
+function updateStatus(){
+  if(!currentStore || !currentName) return;
+
+  const date = todayStr();
+  const st = getPunchState(currentStore, currentName, date);
+  const parts = [];
+
+  if(st.in && st.inTime) parts.push(`直近の出勤：${st.inTime}`);
+  if(st.out && st.outTime) parts.push(`直近の退勤：${st.outTime}`);
+
+  $('status').textContent = parts.join(' / ');$('inBtn').disabled = false;
+  $('outBtn').disabled = false;
+}
+
+// ============================================================
+// 打刻処理
+// 1. 即時画面リセット＆ご指定文言の通知表示
+// 2. 非同期でGASに送信
+// ============================================================
+function punch(action){
+  const url = GAS_URL;
+
+  if(!currentStore || !currentName) return;
+
+  const store = currentStore;
+  const name = currentName;
+  const d = new Date();
+  
+  const yyyy = d.getFullYear();
+  const mm = pad(d.getMonth() + 1);
+  const dd = pad(d.getDate());
+  const hh = pad(d.getHours());
+  const min = pad(d.getMinutes());
+
+  const dateStr = `${yyyy}-${mm}-${dd}`;
+  const displayDateTime = `${yyyy}/${mm}/${dd} ${hh}:${min}`;
+  const timeStr = `${hh}:${min}`;
+  const actionLabel = action === 'in' ? '出勤' : '退勤';
+
+  const payload = { date: dateStr, store: store, name: name, in: '', out: '' };
+
+  if(action === 'in'){
+    payload.in = timeStr;
+    setPunchState(store, name, dateStr, { in: true, inTime: timeStr });
+  }else{
+    payload.out = timeStr;
+    setPunchState(store, name, dateStr, { out: true, outTime: timeStr });
+  }
+
+  // 指定のフォーマット文言で即時トースト通知表示
+  const noticeMsg = `${displayDateTime} ${name} ${actionLabel}を記録しました`;
+  showToast('ok', noticeMsg);
+
+  // ボタン押下と同時に初期画面（店舗選択）へ戻す
+  resetToStoreSelection();
+
+  // バックグラウンドでスプレッドシートへ送信
+  fetch(url, {
+    method: 'POST',
+    mode: 'cors',
+    redirect: 'follow',
+    body: JSON.stringify(payload)
+  })
+  .then(async res => {
+    const text = await res.text();
+    let data;
+    try{
+      data = JSON.parse(text);
+    }catch(_){
+      throw new Error('GASからの応答エラー');
+    }
+    if(data.status !== 'ok'){
+      throw new Error(data.message || 'エラーが発生しました');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    showToast('error', `${name}さんの${actionLabel}送信に失敗しました。`);
+  });
+}
+
+// ============================================================
+// 起動
+// ============================================================
+function init(){
+  displayNow();
+  resetToStoreSelection();
+}
+
+init();
+</script>
+</body>
+</html>
+timecard_layout_updated_blink.html
+HTML
+データ分析の上限に達しました。ChatGPT Plus にアップグレードするか、明日の 17:36 以降にもう一度お試しください。
+Plus にアップグレードする
